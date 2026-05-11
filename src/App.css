@@ -1,0 +1,177 @@
+:root {
+  /* Brand Colors */
+  --primary-green: #26b69a;
+  --primary-green-light: #4ebaa1;
+  --primary-purple: #2d264b;
+  --accent-pink: #000000;
+  --accent-yellow: #fcc419;
+  --tick-gold: #ffffff;
+
+  /* Neutral Palette (Light) */
+  --bg-body: #e5e7eb;
+  --bg-main: #f5f6f7;
+  --bg-white: #ffffff;
+  --bg-input: #f0f2f5;
+  --bg-received: #e9e4f5;
+  --border-light: #f0f0f0;
+
+  /* Text Palette */
+  --text-dark: #2d264b;
+  --text-muted: #999;
+  --text-white: #ffffff;
+
+  /* Shadow */
+  --shadow-main: rgba(0, 0, 0, 0.1);
+}
+
+/* --- DARK MODE OVERRIDES --- */
+.dark-theme {
+  --bg-body: #121212;
+  --bg-main: #1e1e1e;
+  --bg-white: #252525;
+  --bg-input: #333333;
+  --bg-received: #3a3a3a;
+  --border-light: #333333;
+  --text-dark: #e0e0e0;
+  --text-muted: #aaaaaa;
+  --shadow-main: rgba(0, 0, 0, 0.5);
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  transition:
+    background-color 0.3s ease,
+    border-color 0.3s ease,
+    color 0.2s ease;
+}
+
+/* --- BASE LAYOUT --- */
+html,
+body,
+#root {
+  height: 100%;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background-color: var(--bg-body);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#root {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* --- CHAT APP CONTAINER --- */
+.App {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.app-container {
+  width: 95vw;
+  max-width: 1200px;
+  height: 90vh;
+  background: var(--bg-white);
+  display: flex;
+  box-shadow: 0 10px 30px var(--shadow-main);
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+/* --- Side Navigation --- */
+.side-nav {
+  width: 70px;
+  min-width: 70px;
+  background-color: var(--bg-white);
+  border-right: 1px solid var(--border-light);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  padding: 25px 0;
+}
+.side-nav-top {
+  padding-top: 110px;
+}
+
+.side-nav-top,
+.side-nav-bottom {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 30px;
+}
+
+.nav-item {
+  position: relative;
+  cursor: pointer;
+}
+
+/* Tooltip Logic */
+.tooltip {
+  position: absolute;
+  left: 125%;
+  background-color: var(--primary-purple);
+  color: var(--text-white);
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 12px;
+  visibility: hidden;
+  opacity: 0;
+  transform: translateX(-10px);
+  transition: all 0.2s ease-in-out;
+}
+
+.nav-item:hover .tooltip {
+  visibility: visible;
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.side-nav i {
+  font-size: 26px;
+  color: var(--text-muted);
+}
+
+.side-nav i:hover,
+.side-nav i.active {
+  color: var(--primary-green) !important;
+}
+
+/* Avatar Style */
+.user-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  cursor: pointer;
+  border: 2px solid transparent;
+  object-fit: cover;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.user-avatar:hover {
+  border-color: var(--primary-green);
+}
+
+@media (max-width: 800px) {
+  .app-container {
+    width: 100vw;
+    height: 100vh;
+    border-radius: 0;
+  }
+}

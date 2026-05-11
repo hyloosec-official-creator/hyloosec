@@ -1,0 +1,57 @@
+.user-profile-view {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    background-color: var(--bg-main);
+    animation: fadeIn 0.3s ease-in;
+}
+
+.profile-actions {
+    padding: 20px;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.close-profile {
+    background: none;
+    border: none;
+    font-size: 24px;
+    color: var(--text-dark);
+    cursor: pointer;
+}
+
+.profile-details {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 20px;
+}
+
+.profile-main-img {
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 4px solid var(--primary-green);
+    margin-bottom: 20px;
+}
+
+.profile-info-grid {
+    width: 100%;
+    max-width: 400px;
+    margin-top: 40px;
+}
+
+.info-item {
+    padding: 15px 20px;
+    background: var(--bg-white) var(--text-dark);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: var(--bg-white) ;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
