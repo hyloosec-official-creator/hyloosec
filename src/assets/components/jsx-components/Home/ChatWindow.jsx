@@ -131,7 +131,27 @@ const ChatWindow = ({
       );
     };
 
-    useEffect(() => {
+
+    const handleBulkStatusUpdate = ({ chatId, status, safe }) => {
+      dispatch(
+        bulkUpdateMessageStatus({
+          chatId,
+          status,
+          safe: safe || false, // default false
+        }),
+      );
+    };
+
+    socket.on("message_status_updated", handleStatusUpdate);
+    socket.on("message_status_sync", handleBulkStatusUpdate); // Listen for the sync
+
+    return () => {
+      socket.off("message_status_updated", handleStatusUpdate);
+      socket.off("message_status_sync", handleBulkStatusUpdate);
+    };
+  }, [dispatch]); // Removed displayId so it stays active for all chats
+
+  useEffect(() => {
       // 1. Mobile Keyboard Fix logic
       const handleVisualViewportResize = () => {
         if (window.visualViewport && chatContainerRef.current) {
@@ -168,25 +188,6 @@ const ChatWindow = ({
         scrollRef.current?.scrollIntoView({ behavior: "smooth", block: "end" });
       }, 300);
     };
-
-    const handleBulkStatusUpdate = ({ chatId, status, safe }) => {
-      dispatch(
-        bulkUpdateMessageStatus({
-          chatId,
-          status,
-          safe: safe || false, // default false
-        }),
-      );
-    };
-
-    socket.on("message_status_updated", handleStatusUpdate);
-    socket.on("message_status_sync", handleBulkStatusUpdate); // Listen for the sync
-
-    return () => {
-      socket.off("message_status_updated", handleStatusUpdate);
-      socket.off("message_status_sync", handleBulkStatusUpdate);
-    };
-  }, [dispatch]); // Removed displayId so it stays active for all chats
 
   useEffect(() => {
     if (displayId && myId) {
