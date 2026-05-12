@@ -131,7 +131,6 @@ const ChatWindow = ({
       );
     };
 
-
     const handleBulkStatusUpdate = ({ chatId, status, safe }) => {
       dispatch(
         bulkUpdateMessageStatus({
@@ -152,42 +151,37 @@ const ChatWindow = ({
   }, [dispatch]); // Removed displayId so it stays active for all chats
 
   useEffect(() => {
-      // 1. Mobile Keyboard Fix logic
-      const handleVisualViewportResize = () => {
-        if (window.visualViewport && chatContainerRef.current) {
-          // Keyboard khulne par height ko update karega
-          chatContainerRef.current.style.height = `${window.visualViewport.height}px`;
+    // 1. Mobile Keyboard Fix logic
+    const handleVisualViewportResize = () => {
+      if (window.visualViewport && chatContainerRef.current) {
+        // Keyboard khulne par height ko update karega
+        const offset = window.innerHeight - window.visualViewport.height;
+      chatContainerRef.current.style.bottom = `${offset}px`;
 
-          // Agar keyboard khula hai (height kam hui hai), toh bottom par scroll karo
-          if (window.visualViewport.height < window.innerHeight) {
-            scrollRef.current?.scrollIntoView({ behavior: "smooth" });
-          }
+        // Agar keyboard khula hai (height kam hui hai), toh bottom par scroll karo
+        if (window.visualViewport.height < window.innerHeight) {
+          scrollRef.current?.scrollIntoView({ behavior: "smooth" });
         }
-      };
-
-      if (window.visualViewport) {
-        window.visualViewport.addEventListener(
-          "resize",
-          handleVisualViewportResize,
-        );
       }
-
-      return () => {
-        if (window.visualViewport) {
-          window.visualViewport.removeEventListener(
-            "resize",
-            handleVisualViewportResize,
-          );
-        }
-      };
-    }, []);
-
-    const handleInputFocus = () => {
-      // Keyboard khulne mein thoda time lagta hai, isliye delay
-      setTimeout(() => {
-        scrollRef.current?.scrollIntoView({ behavior: "smooth", block: "end" });
-      }, 300);
     };
+
+    if (window.visualViewport) {
+      window.visualViewport.addEventListener(
+        "resize",
+        handleVisualViewportResize,
+      );
+    }
+
+    window.visualViewport?.addEventListener("resize", handleVisualViewportResize);
+  return () => window.visualViewport?.removeEventListener("resize", handleVisualViewportResize);
+  }, []);
+
+  const handleInputFocus = () => {
+    // Keyboard khulne mein thoda time lagta hai, isliye delay
+    setTimeout(() => {
+      scrollRef.current?.scrollIntoView({ behavior: "smooth", block: "end" });
+    }, 300);
+  };
 
   useEffect(() => {
     if (displayId && myId) {
