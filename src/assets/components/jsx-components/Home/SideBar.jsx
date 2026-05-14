@@ -194,7 +194,7 @@ const SideBar = ({ chats = [], activeChatId, onChatSelect, isLoading }) => {
       <div className="sidebar-header">
         <img src={logo} alt="App Logo" className="logo-img" />
         <h1>
-          me <span>&</span> you
+         Hyloosec
         </h1>
       </div>
       <div
