@@ -156,7 +156,7 @@ const ChatWindow = ({
       if (window.visualViewport && chatContainerRef.current) {
         // Keyboard khulne par height ko update karega
         const offset = window.innerHeight - window.visualViewport.height;
-      chatContainerRef.current.style.bottom = `${offset}px`;
+        chatContainerRef.current.style.bottom = `${offset}px`;
 
         // Agar keyboard khula hai (height kam hui hai), toh bottom par scroll karo
         if (window.visualViewport.height < window.innerHeight) {
@@ -172,16 +172,22 @@ const ChatWindow = ({
       );
     }
 
-    window.visualViewport?.addEventListener("resize", handleVisualViewportResize);
-  return () => window.visualViewport?.removeEventListener("resize", handleVisualViewportResize);
+    window.visualViewport?.addEventListener(
+      "resize",
+      handleVisualViewportResize,
+    );
+    return () =>
+      window.visualViewport?.removeEventListener(
+        "resize",
+        handleVisualViewportResize,
+      );
   }, []);
 
-  const handleInputFocus = () => {
-    // Keyboard khulne mein thoda time lagta hai, isliye delay
+  const handleInputFocus = React.useCallback(() => {
     setTimeout(() => {
       scrollRef.current?.scrollIntoView({ behavior: "smooth", block: "end" });
     }, 300);
-  };
+  }, []);
 
   useEffect(() => {
     if (displayId && myId) {
