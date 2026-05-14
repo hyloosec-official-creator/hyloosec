@@ -84,7 +84,7 @@ const Login = () => {
         <div className="logo-container" style={{ marginBottom: "10px" }}>
           <img 
             src={Logo} 
-            alt="Hyloosec Logo" 
+            alt="HylooSec Logo" 
             style={{ 
               width: "80px", // Size aap adjust kar sakte hain
               height: "auto",
@@ -178,7 +178,7 @@ const Login = () => {
             className="toggle-btn"
             style={{ background: "none", border: "none", cursor: "pointer" }}
           >
-            New to Hyloosec? Create an account
+            New to HylooSec? Create an account
           </button>
         </div>
       </form>

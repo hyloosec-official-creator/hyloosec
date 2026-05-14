@@ -161,7 +161,7 @@ const SideBar = ({ chats = [], activeChatId, onChatSelect, isLoading }) => {
         <div className="sidebar-header">
           <img src={logo} alt="App Logo" className="logo-img" />
           <h1>
-            Hyloosec
+            HylooSec
           </h1>
         </div>
         <SidebarSkeleton />
@@ -176,7 +176,7 @@ const SideBar = ({ chats = [], activeChatId, onChatSelect, isLoading }) => {
         <div className="sidebar-header">
           <img src={logo} alt="App Logo" className="logo-img" />
           <h1>
-            Hyloosec
+            HylooSec
           </h1>
         </div>
         <div className="search-bar" onClick={() => setIsSearchOpen(true)}>
@@ -194,7 +194,7 @@ const SideBar = ({ chats = [], activeChatId, onChatSelect, isLoading }) => {
       <div className="sidebar-header">
         <img src={logo} alt="App Logo" className="logo-img" />
         <h1>
-         Hyloosec
+         HylooSec
         </h1>
       </div>
       <div

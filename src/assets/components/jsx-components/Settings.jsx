@@ -59,7 +59,7 @@ const Settings = ({ isDarkMode, setIsDarkMode }) => {
       setUploading(true);
       // Settings.jsx line 57 ko change karke axios use karein
       const response = await axios.post(
-        `https://hyloosec-spring-backend.onrender.com/api/user/upload-profile`,
+        `https://HylooSec-spring-backend.onrender.com/api/user/upload-profile`,
         formData,
         {
           headers: {
@@ -81,7 +81,7 @@ const Settings = ({ isDarkMode, setIsDarkMode }) => {
     const previousBio = user.bio;
     try {
       await axios.put(
-        `https://hyloosec-spring-backend.onrender.com/api/user/update-bio`,
+        `https://HylooSec-spring-backend.onrender.com/api/user/update-bio`,
         {
           userId: user.userId,
           bio: newBio,

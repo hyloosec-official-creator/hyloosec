@@ -90,7 +90,7 @@ const Home = () => {
           );
 
           const javaRes = await axios.post(
-            "https://hyloosec-spring-backend.onrender.com/api/user/bulk-profiles",
+            "https://HylooSec-spring-backend.onrender.com/api/user/bulk-profiles",
             contactIds,
           );
           dispatch(setBulkProfiles(javaRes.data));
@@ -371,7 +371,7 @@ const Home = () => {
           formData.append("files", finalBlob, f.name + ".enc"); // extension badal di security ke liye
 
           const mediaRes = await axios.post(
-            "https://hyloosec-spring-backend.onrender.com/api/media/upload",
+            "https://HylooSec-spring-backend.onrender.com/api/media/upload",
             formData,
             {
               headers: { Authorization: `Bearer ${token}` },

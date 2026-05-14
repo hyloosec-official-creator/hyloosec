@@ -505,7 +505,7 @@ const Create = () => {
       </div>
 
       <button type="submit" className="auth-btn" disabled={isLocating}>
-        {isLocating ? "Fetching Location..." : "Join Hyloosec"}
+        {isLocating ? "Fetching Location..." : "Join HylooSec"}
       </button>
 
       <div className="center-toggle">

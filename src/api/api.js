@@ -2,7 +2,7 @@ import axios from 'axios';
 import { store } from '../store/store'; // Adjust path to your store.js
 
 const API = axios.create({
-  baseURL: 'https://hyloosec-node-backend.onrender.com/api', // Your Node.js server
+  baseURL: 'https://HylooSec-node-backend.onrender.com/api', // Your Node.js server
 });
 
 // This "Interceptor" runs before every request

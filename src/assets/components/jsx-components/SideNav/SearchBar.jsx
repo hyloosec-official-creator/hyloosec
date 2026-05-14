@@ -22,7 +22,7 @@ const SearchBar = ({ onClose }) => {
     setFoundUser(null);
 
     try {
-      const response = await fetch(`https://hyloosec-spring-backend.onrender.com/api/user/${searchId}`);
+      const response = await fetch(`https://HylooSec-spring-backend.onrender.com/api/user/${searchId}`);
       
       if (!response.ok) throw new Error("User not found");
       
@@ -42,7 +42,7 @@ const handleMessageClick = async () => {
   try {
     // 1. Create/Register the conversation in MongoDB immediately
     // We call an endpoint to ensure the conversation document exists
-    await fetch(`https://hyloosec-node-backend.onrender.com/api/conversations/register`, {
+    await fetch(`https://HylooSec-node-backend.onrender.com/api/conversations/register`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -53,7 +53,7 @@ const handleMessageClick = async () => {
     });
 
     // 2. Fetch history (your existing logic)
-    const response = await fetch(`https://hyloosec-node-backend.onrender.com/api/messages/${currentUser.userId}/${foundUser.userId}`);
+    const response = await fetch(`https://HylooSec-node-backend.onrender.com/api/messages/${currentUser.userId}/${foundUser.userId}`);
     const history = await response.json();
     
     // 3. Update Redux (Your existing logic)

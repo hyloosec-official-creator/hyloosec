@@ -4,7 +4,7 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 export const fetchAllChatData = createAsyncThunk(
   "sidebar/fetchAllChatData",
   async (userId) => {
-    const response = await fetch(`https://hyloosec-node-backend.onrender.com/api/conversations/${userId}`);
+    const response = await fetch(`https://HylooSec-node-backend.onrender.com/api/conversations/${userId}`);
     if (!response.ok) throw new Error("Failed to fetch conversations");
     return await response.json(); // Returns array of IDs like ['User1', 'User2']
   }

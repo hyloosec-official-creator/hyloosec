@@ -1,7 +1,7 @@
 import { io } from "socket.io-client";
 
 // This must match your Server's port (5000)
-const URL = "https://hyloosec-node-backend.onrender.com";
+const URL = "https://HylooSec-node-backend.onrender.com";
 
 // Create the socket instance
 const socket = io(URL, {

@@ -18,7 +18,7 @@ const UserInfo = ({ activeChat, onClose }) => {
   const fetchBio = async () => {
     try {
       const response = await axios.get(
-        `https://hyloosec-spring-backend.onrender.com/api/user/profile/${targetUserId}`
+        `https://HylooSec-spring-backend.onrender.com/api/user/profile/${targetUserId}`
       );
 
       setOtherUserBio(response.data?.bio ?? null);
@@ -32,8 +32,8 @@ const UserInfo = ({ activeChat, onClose }) => {
 
 
   const userBio = isMe
-    ? currentUser?.bio || "Hey there! I am using Hyloosec."
-    : otherUserBio || activeChat?.bio || "Hey there! I am using Hyloosec.";
+    ? currentUser?.bio || "Hey there! I am using HylooSec."
+    : otherUserBio || activeChat?.bio || "Hey there! I am using HylooSec.";
 
     console.log(activeChat);
 
