@@ -316,7 +316,7 @@ const Create = () => {
           >
             <input
               type={showPin ? "text" : "password"}
-              placeholder="Create 4-6 Digit Security PIN"
+              placeholder="Create 6 Digit Security PIN"
               maxLength="6"
               required
               value={pin}
