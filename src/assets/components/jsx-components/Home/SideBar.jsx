@@ -74,7 +74,13 @@ const SidebarMsgPreview = ({ chat, currentUserId, privateKey }) => {
   return <span className="msg-text-part">{displayText}</span>;
 };
 
-const SideBar = ({ chats = [], activeChatId, onChatSelect, isLoading }) => {
+const SideBar = ({
+  chats = [],
+  activeChatId,
+  onChatSelect,
+  isLoading,
+  isDarkMode,
+}) => {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const currentUser = useSelector((state) => state.auth.user);
   const myPrivateKey = currentUser?.privateKey || currentUser?.user?.privateKey;
@@ -160,7 +166,9 @@ const SideBar = ({ chats = [], activeChatId, onChatSelect, isLoading }) => {
       <div className="sidebar-container-loader">
         <div className="sidebar-header">
           <img src={logo} alt="App Logo" className="logo-img" />
-          <h1>
+          <h1
+            className={`app-title-header ${isDarkMode ? "dark-text" : "light-text"}`}
+          >
             HylooSec
           </h1>
         </div>
@@ -175,7 +183,9 @@ const SideBar = ({ chats = [], activeChatId, onChatSelect, isLoading }) => {
       <>
         <div className="sidebar-header">
           <img src={logo} alt="App Logo" className="logo-img" />
-          <h1>
+          <h1
+            className={`app-title-header ${isDarkMode ? "dark-text" : "light-text"}`}
+          >
             HylooSec
           </h1>
         </div>
@@ -193,8 +203,10 @@ const SideBar = ({ chats = [], activeChatId, onChatSelect, isLoading }) => {
     <>
       <div className="sidebar-header">
         <img src={logo} alt="App Logo" className="logo-img" />
-        <h1>
-         HylooSec
+        <h1
+          className={`app-title-header ${isDarkMode ? "dark-text" : "light-text"}`}
+        >
+          HylooSec
         </h1>
       </div>
       <div

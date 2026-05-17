@@ -19,6 +19,7 @@ const Login = () => {
 
   const [showModal, setShowModal] = useState(false);
   const [tempData, setTempData] = useState(null);
+  const [isLoadingButton, setIsLoadingButton] = useState(false);
 
   const handleChange = (e) => {
     if (error) dispatch(clearMessages());
@@ -27,20 +28,27 @@ const Login = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Login attempt started with:", formData.userId); // LOG 1
+    console.log("Login attempt started with:", formData.userId); 
     try {
+      setIsLoadingButton(true);
       const response = await API.post("/api/auth/login", formData);
-      console.log("Server Response:", response.data); // LOG 2
+      console.log("Server Response:", response.data);
       if (response.status === 200) {
-        console.log("Dispatching loginUser action...", response.data); // LOG 3
+        console.log("Dispatching loginUser action...", response.data); 
         setTempData(response.data);
         setShowModal(true);
       }
     } catch (err) {
-      console.error("Login Error Object:", err); // LOG 4
+      console.error("Login Error Object:", err); 
       if (err.response?.status === 423) {
         const responseData = err.response.data;
-        const remainingMinutes = responseData.split(":")[1] || "15";
+        let remainingMinutes = "15";
+
+        if (typeof responseData === "string" && responseData.includes(":")) {
+          remainingMinutes = responseData.split(":")[1] || "15";
+        } else if (responseData && responseData.minutes) {
+          remainingMinutes = responseData.minutes; // Handling if backend sends object
+        }
 
         dispatch(
           setAuthError(
@@ -53,6 +61,8 @@ const Login = () => {
         dispatch(setAuthError("Server error. Please try again later."));
       }
       setFormData({ ...formData, password: "" });
+    } finally {
+      setIsLoadingButton(false);
     }
   };
   const togglePasswordVisibility = () => {
@@ -60,7 +70,6 @@ const Login = () => {
   };
 
   const handleSecuritySuccess = (privateKey) => {
-    // Redux mein user data aur decrypted private key bhej dein
     dispatch(loginUser({ ...tempData, privateKey }));
     setShowModal(false);
   };
@@ -76,28 +85,26 @@ const Login = () => {
           justifyContent: "center",
           alignItems: "center",
           width: "100%",
-          // Height 100% ki jagah auto rakhein taaki card ke andar padding bani rahe
           height: "auto",
           margin: "0 auto",
         }}
       >
         <div className="logo-container" style={{ marginBottom: "10px" }}>
-          <img 
-            src={Logo} 
-            alt="HylooSec Logo" 
-            style={{ 
-              width: "80px", // Size aap adjust kar sakte hain
+          <img
+            src={Logo}
+            alt="HylooSec Logo"
+            style={{
+              width: "80px", 
               height: "auto",
               display: "block",
-              margin: "0 auto"
-            }} 
+              margin: "0 auto",
+            }}
           />
         </div>
         <h2 className="Welcome" style={{ marginBottom: "20px" }}>
           Welcome Back
         </h2>
 
-        {/* input-form ko width 100% dena zaroori hai */}
         <div className="input-form" style={{ width: "100%" }}>
           <input
             name="userId"
@@ -166,21 +173,22 @@ const Login = () => {
         <button
           type="submit"
           className="auth-btn"
-          style={{ width: "100%", marginTop: "20px" }}
+          style={{marginTop: "20px" }}
+          disabled={isLoadingButton}
         >
-          Login
+          {isLoadingButton ? (
+            <span className="login-btn-loader"></span>
+          ) : (
+            "Login"
+          )}
         </button>
-
-        <div className="center-toggle" style={{ marginTop: "15px" }}>
-          <button
-            type="button"
-            onClick={() => dispatch(setView("register"))}
-            className="toggle-btn"
-            style={{ background: "none", border: "none", cursor: "pointer" }}
-          >
-            New to HylooSec? Create an account
-          </button>
-        </div>
+        <button
+          type="button"
+          onClick={() => dispatch(setView("register"))}
+          className="toggle-btn"
+        >
+          New to HylooSec? Create an account
+        </button>
       </form>
 
       {showModal && (

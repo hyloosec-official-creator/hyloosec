@@ -27,15 +27,6 @@
   border-radius: 50%;
 }
 
-.sidebar-header h1 {
-  font-size: 24px;
-  color: var(--text-dark);
-}
-
-.sidebar-header h1 span {
-  color: var(--accent-yellow);
-}
-
 /* Avatar & Status */
 .sidebar-avatar-wrapper {
   position: relative;
@@ -119,7 +110,7 @@
 }
 
 .sidebar-tick svg {
-  filter: drop-shadow(0px 1px 1px rgba(0,0,0,0.3));
+  filter: drop-shadow(0px 1px 1px rgba(0, 0, 0, 0.3));
 }
 
 /* Layout */
@@ -137,7 +128,8 @@
   border-left: 4px solid transparent;
 }
 
-.chat-item:hover, .chat-item.active {
+.chat-item:hover,
+.chat-item.active {
   background-color: #000000;
   border-left: 4px solid #2ecc71;
 }
@@ -165,13 +157,26 @@
   animation: dot-flash 1.4s infinite linear;
 }
 
-.dot-loader:nth-child(2) { animation-delay: 0.2s; }
-.dot-loader:nth-child(3) { animation-delay: 0.4s; }
+.dot-loader:nth-child(2) {
+  animation-delay: 0.2s;
+}
+.dot-loader:nth-child(3) {
+  animation-delay: 0.4s;
+}
 
 @keyframes dot-flash {
-  0% { opacity: 0.2; transform: scale(0.8); }
-  50% { opacity: 1; transform: scale(1.1); }
-  100% { opacity: 0.2; transform: scale(0.8); }
+  0% {
+    opacity: 0.2;
+    transform: scale(0.8);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.1);
+  }
+  100% {
+    opacity: 0.2;
+    transform: scale(0.8);
+  }
 }
 
 .sidebar-last-msg {
@@ -197,5 +202,3 @@
   font-weight: 600;
   margin-top: 2px;
 }
-
-

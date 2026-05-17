@@ -7,13 +7,11 @@
   --bg-dark: #121212;
 }
 
-
-  body {
+body {
   margin: 0;
   padding: 0;
   background-color: var(--bg-dark);
 }
-
 
 /* --- 2. Main Page Layout --- */
 .auth-full-page {
@@ -24,7 +22,6 @@
   align-items: center;
   background-color: transparent;
   box-sizing: border-box;
-  
 }
 
 /* --- 3. The Auth Card --- */
@@ -43,21 +40,20 @@
   align-items: center;
 }
 
-
 /* Update this selector to match your Auth.jsx logic */
 .auth-card.register-view-active {
   max-width: 800px; /* Expands the width */
-  height: auto;      /* Allows the card to grow with content */
-  max-height: 90vh;  /* Prevents it from going off-screen */
-  overflow-y: auto;  /* Adds a scrollbar if the content is too long */
+  height: auto; /* Allows the card to grow with content */
+  max-height: 90vh; /* Prevents it from going off-screen */
+  overflow-y: auto; /* Adds a scrollbar if the content is too long */
   border: 1px solid var(--logo-green);
 }
 
 .Welcome {
   /* ... your other styles ... */
   background: linear-gradient(to right, #1a1a1a, #4a4a4a);
-  -webkit-background-clip: text; 
-  background-clip: text;        
+  -webkit-background-clip: text;
+  background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 
@@ -125,10 +121,10 @@ input::-ms-clear {
   gap: 15px;
   width: 100%;
   padding: 20px; /* Thoda sa breathing space */
-  
+
   /* --- CRITICAL FIXES --- */
-  flex: 1;                 /* Card ki bachi hui jagah lega */
-  overflow-y: auto;        /* Sirf yahi area scroll hoga */
+  flex: 1; /* Card ki bachi hui jagah lega */
+  overflow-y: auto; /* Sirf yahi area scroll hoga */
   justify-content: flex-start; /* IMPORTANT: Center mat kijiye, varna top cut jayega */
   align-items: stretch;
 }
@@ -138,19 +134,17 @@ input[type="date"] {
   position: relative;
 }
 
-
 input[type="date"]::-webkit-datetime-edit {
   color: #121212;
 }
 
 input[type="date"]::-webkit-calendar-picker-indicator {
   cursor: pointer;
-  filter: invert(0.4); 
+  filter: invert(0.4);
   position: absolute;
   right: 15px;
   transition: 0.3s ease;
 }
-
 
 .security-section {
   display: flex;
@@ -161,19 +155,19 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 .security-section select,
 .security-section input {
   flex: 1;
-  min-width: 0; 
+  min-width: 0;
 }
 .security-select {
   width: 100%;
   height: 52px;
   border-radius: 14px;
-  padding: 0 15px; 
-  font-size: 15px; 
+  padding: 0 15px;
+  font-size: 15px;
   border: none;
   background: #f0f2f5;
   color: #121212;
   cursor: pointer;
-  appearance: none; 
+  appearance: none;
   transition: all 0.3s ease;
 }
 .security-select:focus {
@@ -181,7 +175,6 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   box-shadow: 0 0 0 2px var(--logo-purple);
   outline: none;
 }
-
 
 /* --- 6. Inputs & Buttons --- */
 .login input {
@@ -216,8 +209,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   outline: none;
 }
 
-.auth-btn,
-.toggle-btn {
+.auth-btn {
   width: 95%;
   height: 52px;
   border-radius: 14px;
@@ -232,8 +224,23 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     background 0.3s ease;
 }
 
-.auth-btn,
 .toggle-btn {
+  width: 95%;
+  height: 52px;
+  border-radius: 14px;
+  box-sizing: border-box;
+  font-size: 16px;
+  border: 1px solid #ddd;
+  background-color: #32ac9d;
+  font-weight: 700;
+  cursor: pointer;
+  margin-top: 10px;
+  transition:
+    transform 0.2s ease,
+    background 0.3s ease;
+}
+
+.auth-btn {
   background: var(--logo-dark);
   color: white;
 }
@@ -249,6 +256,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   animation: scatterIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
 }
 
+
 @keyframes scatterIn {
   0% {
     opacity: 0;
@@ -260,8 +268,28 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   }
 }
 
+.login-btn-loader {
+  width: 20px;
+  height: 20px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-top-color: #ffffff; 
+  border-radius: 50%;
+  display: inline-block;
+  animation: btnSpin 0.8s linear infinite;
+}
 
-.forgot input{
+@keyframes btnSpin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.auth-btn:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.forgot input {
   width: 100%;
   height: 52px;
   border-radius: 14px;
@@ -278,7 +306,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   font-size: 13px;
   color: var(--logo-purple);
   cursor: pointer;
-  align-self: flex-end; 
+  align-self: flex-end;
   margin-top: -5px;
   font-weight: 600;
   transition: opacity 0.3s;
@@ -287,27 +315,6 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 .forgot-link:hover {
   text-decoration: underline;
   opacity: 0.8;
-}
-
-.center-toggle {
-  width: 100%;
-  display: flex;
-  justify-content: center;
-  padding-top: 20px;
-  border-top: 1px solid #f0f2f5; 
-  margin-top: 10px;
-}
-
-.center-toggle .toggle-btn {
-  margin-top: 0;
-  background: transparent;
-  color: var(--logo-dark);
-  text-decoration: none;
-  font-size: 14px;
-  border: 1px solid #ddd;
-  padding: 8px 20px;
-  margin-bottom:3px;
-  border-radius: 20px;
 }
 
 .center-toggle .toggle-btn:hover {
@@ -326,9 +333,16 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 
 /* Optional: Subtle shake animation for the error */
 @keyframes shake {
-  0%, 100% { transform: translateX(0); }
-  25% { transform: translateX(-5px); }
-  75% { transform: translateX(5px); }
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  25% {
+    transform: translateX(-5px);
+  }
+  75% {
+    transform: translateX(5px);
+  }
 }
 
 .success-message {
@@ -341,8 +355,14 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(-5px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(-5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 /* --- Global & Premium Scrollbar (Pure App ke liye) --- */
@@ -363,4 +383,31 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 * {
   scrollbar-width: thin;
   scrollbar-color: var(--logo-purple) transparent;
+}
+@media (max-width: 800px) {
+  .auth-card {
+    background: white;
+    width: 90%;
+    height: 85vh; /* Keeps card height fixed */
+    max-width: 400px;
+    padding: 40px;
+    border-radius: 28px;
+
+    display: flex;
+    justify-content: flex-start;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  /* Update this selector to match your Auth.jsx logic */
+  .auth-card.register-view-active {
+    max-width: 800px; /* Expands the width */
+    height: auto; /* Allows the card to grow with content */
+    max-height: 90vh; /* Prevents it from going off-screen */
+    overflow-y: auto; /* Adds a scrollbar if the content is too long */
+    border: 1px solid var(--logo-green);
+  }
+  .verify {
+    padding-top: 40px;
+  }
 }

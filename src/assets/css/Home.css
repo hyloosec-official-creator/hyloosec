@@ -33,9 +33,35 @@
   border-radius: 50%;
 }
 
-.sidebar-header h1 {
-  font-size: 24px;
-  color: var(--text-dark);
+/* Base Style - Isme se saare clip aur transparent rules hata diye hain */
+.app-title-header {
+  font-size: 26px;
+  font-weight: 700;
+  font-family: 'Poppins', sans-serif;
+  letter-spacing: 0.5px;
+  display: inline-block;
+  transition: all 0.3s ease;
+}
+
+/* 1. LIGHT MODE LOOK - Background gradient aur clipping ab ek sath ek hi selector mein hain */
+.app-title-header.light-text {
+  background: linear-gradient(180deg, #4ed3c4 0%, #228074 60%, #11463f 100%) !important;
+  -webkit-background-clip: text !important;
+  background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+  text-shadow: 0px 1px 2px rgba(0, 0, 0, 0.12);
+}
+
+/* 2. DARK MODE LOOK - Same coordination yahan bhi */
+.app-title-header.dark-text {
+  background: linear-gradient(180deg, #7be0d4 0%, #32ac9d 50%, #17645b 100%) !important;
+  -webkit-background-clip: text !important;
+  background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+  text-shadow: 
+    0px 1px 0px rgba(255, 255, 255, 0.2),
+    0px 1px 3px rgba(0, 0, 0, 0.7),
+    0px 3px 6px rgba(50, 172, 157, 0.3);
 }
 
 .sidebar-header h1 span {

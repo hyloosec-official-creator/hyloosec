@@ -21,7 +21,7 @@ const Create = () => {
   const [securityType, setSecurityType] = useState("PIN");
   const [pin, setPin] = useState("");
   const [showPin, setShowPin] = useState(false);
-
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [formData, setFormData] = useState({
     username: "",
     fatherName: "",
@@ -166,6 +166,7 @@ const Create = () => {
     }
 
     try {
+      setIsSubmitting(true);
       const { publicKey, privateKey } = await generateKeyPair();
       const finalData = {
         ...formData,
@@ -207,6 +208,8 @@ const Create = () => {
           ? err.response.data
           : "Something went wrong";
       dispatch(setAuthError(serverMessage));
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -504,19 +507,27 @@ const Create = () => {
         )}
       </div>
 
-      <button type="submit" className="auth-btn" disabled={isLocating}>
-        {isLocating ? "Fetching Location..." : "Join HylooSec"}
+      <button
+        type="submit"
+        className="auth-btn"
+        disabled={isLocating || isSubmitting}
+      >
+        {isLocating ? (
+          "Fetching Location..."
+        ) : isSubmitting ? (
+          <span className="login-btn-loader"></span>
+        ) : (
+          "Join HylooSec"
+        )}
       </button>
 
-      <div className="center-toggle">
-        <button
-          type="button"
-          onClick={() => dispatch(setView("login"))}
-          className="toggle-btn"
-        >
-          Already have an account? Login
-        </button>
-      </div>
+      <button
+        type="button"
+        onClick={() => dispatch(setView("login"))}
+        className="toggle-btn"
+      >
+        Already have an account? Login
+      </button>
     </form>
   );
 };

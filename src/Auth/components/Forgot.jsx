@@ -80,7 +80,7 @@ const Forgot = () => {
     <div className="forgot-container">
       {!isVerified ? (
         <form className="forgot fade-in" onSubmit={handleVerify}>
-          <h2 className="Welcome">Verify Identity</h2>
+          <h2 className="verify">Verify Identity</h2>
           <div className="input-form">
             <input
               name="userId"

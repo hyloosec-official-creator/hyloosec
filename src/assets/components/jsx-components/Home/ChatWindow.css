@@ -601,7 +601,6 @@
   opacity: 0.7;
 }
 
-/* --- Lightbox Modal --- */
 .media-lightbox {
   position: fixed;
   top: 0;
@@ -663,7 +662,6 @@
   border-radius: 8px;
 }
 
-/* --- Placeholder --- */
 .chat-placeholder {
   display: flex;
   flex-direction: column;
@@ -671,9 +669,32 @@
   align-items: center;
   height: 100%;
   text-align: center;
-  color: var(--text-dark);
-  animation: fadeIn 0.5s ease-in-out;
+  gap: 10px;
+  background: transparent;
 }
+
+.chat-placeholder .placeholder-icon {
+  font-size: 4rem;
+  color: var(--text-muted, #667781); 
+  opacity: 0.4; 
+  margin-bottom: 5px;
+}
+
+.placeholder-title {
+  font-family: 'Poppins', sans-serif;
+  font-weight: 500;
+  font-size: 1.8rem;
+  color: var(--text-dark, #a6abb1); 
+  margin: 0;
+}
+
+.placeholder-subtitle {
+  font-family: 'Poppins', sans-serif;
+  font-weight: 400;
+  font-size: .75rem;
+  color: var(--text-muted, #8696a0); 
+}
+
 
 .chat-date-separator {
   display: flex;
@@ -681,7 +702,7 @@
   align-items: center;
   margin: 20px 0;
   width: 100%;
-  position: sticky; /* Optional: keeps the date visible while scrolling */
+  position: sticky; 
   top: 10px;
   z-index: 10;
 }
@@ -692,7 +713,7 @@
     41,
     59,
     0.8
-  ); /* Dark pill color to match your UI */
+  ); 
   color: #cbd5e1;
   padding: 4px 12px;
   border-radius: 8px;
@@ -702,7 +723,6 @@
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
-/* --- Video & File Bubbles (WhatsApp Style) --- */
 
 .video-wrapper,
 .pdf-card {
@@ -756,7 +776,6 @@
   max-height: 250px;
 }
 
-/* PDF Card Styling */
 .pdf-card {
   display: flex;
   align-items: center;
@@ -808,9 +827,9 @@
   border: none;
 }
 
-/* Status Icons */
+
 .seen-tick {
-  color: #0084ff !important; /* Vivid Blue for seen */
+  color: #0084ff !important;
 }
 
 .delivered-tick {
@@ -818,14 +837,14 @@
 }
 
 .msg.sent {
-  background: #005c4b; /* Dark WhatsApp Green */
+  background: #005c4b;
   color: #e9edef;
   align-self: flex-end;
   border-radius: 10px 0px 10px 10px;
 }
 
 .msg.received {
-  background: #202c33; /* Dark WhatsApp Received */
+  background: #202c33; 
   color: #e9edef;
   align-self: flex-start;
   border-radius: 0px 10px 10px 10px;
@@ -838,7 +857,6 @@
   margin-top: 4px;
 }
 
-/* Loader for downloading */
 .spinner-small {
   width: 20px;
   height: 20px;
@@ -865,25 +883,46 @@
   }
 }
 
-/* --- Mobile Responsiveness --- */
 @media (max-width: 800px) {
-  .sidebar{
-
+.sidebar {
     width: 100% !important;
     height: 100vh !important;
-
   }
+
+  /* REFACTORING THE MOBILE WINDOW CONTAINER */
   .chat-window {
-   position: fixed;
+    position: fixed !important; /* Forces layout to detach from grid on small screens */
     top: 0;
     left: 0;
     width: 100vw !important;
-    height: 100vh !important;
-    z-index: 2000;
+    /* transition ko remove kiya taaki keyboard ke sath lag (delay) na aaye */
+    transition: none !important; 
+    
+    /* Safely constraints container inside mobile viewport height boundary */
+    height: 100% !important;
+    max-height: -webkit-fill-available;
+    display: flex;
+    flex-direction: column;
   }
-  .mobile-back-btn {
-    display: block;
+
+  /* EXTRA LAYOUT PROTECTION FOR MOUNTED FOOTER */
+  .chat-input {
+    padding: 12px;
+    gap: 8px;
+    background: var(--bg-white) !important;
+    
+    /* Keyboard active hote waqt z-index protect karega text boundaries ko */
+    z-index: 5000; 
+    position: relative;
+    flex-shrink: 0;
   }
+
+  .chat-input input[type="text"] {
+    font-size: 16px; /* Prevents iOS/Android Safari native scaling zoom on focus */
+    padding: 10px 15px;
+  }
+
+  /* Existing rules inside your query */
   .msg {
     max-width: 80%;
   }
@@ -891,26 +930,13 @@
     width: 160px;
     height: 160px;
   }
-
   .file-attachment-preview {
     max-width: 160px;
   }
-  .chat-input {
-    padding: 10px;
-    gap: 8px;
-  }
-
-  .chat-input input[type="text"] {
-    font-size: 16px; /* Prevents unwanted browser zooming */
-    padding: 10px 15px;
-  }
-
-  /* Resize UserInfo profile image for mobile */
   .profile-main-img {
     width: 140px;
     height: 140px;
   }
-
   .user-profile-view {
     height: 100vh;
     width: 100vw;

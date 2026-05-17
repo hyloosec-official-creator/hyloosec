@@ -385,13 +385,20 @@ const ChatWindow = ({
     return `last seen ${date.toLocaleDateString([], { day: "2-digit", month: "2-digit", year: "2-digit" })}`;
   };
 
-  /* ================= EMPTY STATE ================= */
   if (!activeChat) {
     return (
       <main className="chat-window placeholder-view">
         <div className="chat-placeholder">
-          <i className="ph ph-chats-teardrop"></i>
-          <h2>Select a conversation</h2>
+          {/* WhatsApp Web jaisa ek bada saada icon */}
+          <i className="ph ph-chats placeholder-icon"></i>
+          
+          <h2 className="placeholder-title">
+            Select a conversation
+          </h2>
+          
+          <h4 className="placeholder-subtitle">
+            Chats are end-to-end encrypted
+          </h4>
         </div>
       </main>
     );
@@ -399,9 +406,7 @@ const ChatWindow = ({
 
   /* ================= UI ================= */
   return (
-    <main className="chat-window">
-      {/* ---------- MEDIA LIGHTBOX (FULLSCREEN) ---------- */}
-      {/* ---------- MEDIA LIGHTBOX (FULLSCREEN) ---------- */}
+    <main className="chat-window" ref={chatContainerRef}>
       {previewMedia && (
         <div className="media-lightbox" onClick={() => setPreviewMedia(null)}>
           <button
