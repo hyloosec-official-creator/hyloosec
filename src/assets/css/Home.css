@@ -22,7 +22,7 @@
 }
 
 .sidebar-header {
-  padding: 20px;
+  padding: 4rem 1rem 1rem 1rem;
   display: flex;
   align-items: center;
   gap: 15px;
@@ -194,7 +194,7 @@
 .chat-list {
   flex: 1;
   overflow: auto;
-  padding-bottom: 20px;
+  padding-bottom: 40px;
 }
 
 .chat-item {

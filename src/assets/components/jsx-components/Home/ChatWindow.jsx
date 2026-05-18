@@ -183,6 +183,21 @@ const ChatWindow = ({
       );
   }, []);
 
+  useEffect(() => {
+    if (activeChat) {
+      window.history.pushState({ chatOpen: true }, "");
+      const handleNativeBack = (event) => {
+        if (onBack) {
+          onBack();
+        }
+      };
+      window.addEventListener("popstate", handleNativeBack);
+      return () => {
+        window.removeEventListener("popstate", handleNativeBack);
+      };
+    }
+  }, [activeChat, onBack]);
+
   const handleInputFocus = React.useCallback(() => {
     setTimeout(() => {
       scrollRef.current?.scrollIntoView({ behavior: "smooth", block: "end" });
@@ -391,11 +406,9 @@ const ChatWindow = ({
         <div className="chat-placeholder">
           {/* WhatsApp Web jaisa ek bada saada icon */}
           <i className="ph ph-chats placeholder-icon"></i>
-          
-          <h2 className="placeholder-title">
-            Select a conversation
-          </h2>
-          
+
+          <h2 className="placeholder-title">Select a conversation</h2>
+
           <h4 className="placeholder-subtitle">
             Chats are end-to-end encrypted
           </h4>
@@ -473,17 +486,16 @@ const ChatWindow = ({
 
       {/* ---------- HEADER ---------- */}
       <header className="chat-header">
+        <button
+          className="mobile-back-btn"
+          onClick={(e) => {
+            e.stopPropagation();
+            onBack();
+          }}
+        >
+          <i className="ph ph-caret-left"></i>
+        </button>
         <div className="user-meta" onClick={() => setIsUserInfoOpen(true)}>
-          <button
-            className="mobile-back-btn"
-            onClick={(e) => {
-              e.stopPropagation();
-              onBack();
-            }}
-          >
-            <i className="ph ph-caret-left"></i>
-          </button>
-
           <div className="header-avatar-wrapper">
             {activeChat.avatar ? (
               <img

@@ -14,14 +14,6 @@
   flex-shrink: 0;
 }
 
-.sidebar-header {
-  padding: 20px;
-  display: flex;
-  align-items: center;
-  gap: 15px;
-  flex-shrink: 0;
-}
-
 .logo-img {
   width: 50px;
   border-radius: 50%;
