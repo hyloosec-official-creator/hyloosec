@@ -3,7 +3,7 @@ import { store } from "../store/store"; // Adjust path to your store.js
 import { logout } from "../Slice/authSlice"; // पाथ अपने रिड्यूसर के हिसाब से चेक कर लें
 
 const API = axios.create({
-  baseURL: "https://HylooSec-node-backend.onrender.com/api", // Node Backend
+  baseURL: "https://hyloosec-spring-backend.onrender.com", // Node Backend
   // अगर आप स्प्रिंग बूट सर्वर पर कॉल कर रहे हैं तो इसे उस हिसाब से रख सकते हैं
   withCredentials: true, // CRITICAL: यह ब्राउज़र को बैकग्राउंड में HttpOnly कुकीज़ ले जाने देता है
 });
