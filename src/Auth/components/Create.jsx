@@ -196,8 +196,9 @@ const Create = () => {
         dispatch(
           setRegistrationData({
             userId: response.data,
-            username: formData.username,
-            password: formData.password,
+            password: formData.password, // असली पासवर्ड जो उसने डाला था
+            ...formData, // इसमें username, fatherName, dob, securityQuestion, securityAnswer सब आ गया
+            securityType: securityType, // उसका चुना हुआ सिक्योरिटी टाइप (PIN या FILE)
           }),
         );
         dispatch(setView("success"));
