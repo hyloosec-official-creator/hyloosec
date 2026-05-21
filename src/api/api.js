@@ -12,15 +12,11 @@ export const JavaAPI = axios.create({
   withCredentials: true,
 });
 
+// 🎯 यहाँ का हेडर ब्लॉक हमने हटा दिया है।
+// अब ब्राउज़र ऑटोमैटिक HttpOnly कुकी भेजेगा, हेडर की कोई जरूरत नहीं!
 JavaAPI.interceptors.request.use(
   (config) => {
-    const state = store.getState();
-    const token = state.auth.token; 
-
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
-    }
-    return config;
+    return config; 
   },
   (error) => Promise.reject(error)
 );
@@ -36,13 +32,11 @@ const addResponseInterceptor = (instance) => {
   instance.interceptors.response.use(
     (response) => response,
     (error) => {
-      if (error.response && (error.response.status === 401 || error.response.status === 403)) {
-        console.log("cookie nahi milli aur logut");
-        // store.dispatch(logout());
-        // localStorage.removeItem("token");
-        // localStorage.removeItem("user");
-        // localStorage.removeItem("authToken");
-        // window.location.reload();
+      if (error.response && error.response.status === 401) {
+        console.log("Session expired - logging out");
+        store.dispatch(logout());
+        localStorage.clear();
+        window.location.reload();
       }
       return Promise.reject(error);
     }
