@@ -373,9 +373,6 @@ const Home = () => {
           const mediaRes = await JavaAPI.post(
             "/media/upload",
             formData,
-            {
-              headers: { Authorization: `Bearer ${token}` },
-            },
           );
 
           // E. Sabse Important: Metadata pack karna
