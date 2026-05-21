@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import API from "../../api/axios.js";
+import { JavaAPI } from "../../api/api.js";
 import { useDispatch, useSelector } from "react-redux";
 import { Eye, EyeOff, Lock, FileKey, Info } from "lucide-react";
 import {
@@ -180,7 +180,7 @@ const Create = () => {
         finalData.keyIv = iv;
       }
 
-      const response = await API.post("/api/auth/register", finalData);
+      const response = await JavaAPI.post("/auth/register", finalData);
       console.log("Submit hone wala data:", finalData);
 
       if (response.status === 200 || response.status === 201) {
@@ -508,6 +508,10 @@ const Create = () => {
         )}
       </div>
 
+      <div style={{ fontSize: "0.75rem", color: "#888", textAlign: "left", margin: "10px 0" }}>
+        🔒 <strong>Privacy Note:</strong> We securely read your approximate network region and IP solely for auditing your recovery file's authenticity.
+      </div>
+
       <button
         type="submit"
         className="auth-btn"
@@ -521,6 +525,12 @@ const Create = () => {
           "Join HylooSec"
         )}
       </button>
+
+      {!isLocating && !isSubmitting && (
+        <p style={{ fontSize: "0.75rem", color: "#6e54ff", marginTop: "8px", fontWeight: "500" }}>
+          💡 Click "Join HylooSec" to automatically download your password-protected recovery PDF.
+        </p>
+      )}
 
       <button
         type="button"

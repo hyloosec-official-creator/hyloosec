@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import API from "../../api/axios.js"; // <--- ADD THIS
+import { JavaAPI } from "../../api/api";
 import {
   setView,
   setAuthError,
@@ -30,7 +30,7 @@ const Forgot = () => {
   const handleVerify = async (e) => {
     e.preventDefault();
     try {
-      const response = await API.post("/verify-identity", {
+      const response = await JavaAPI.post("/auth/verify-identity", {
         userId: formData.userId,
         dob: formData.dob,
         securityQuestion: formData.securityQuestion,
@@ -57,7 +57,7 @@ const Forgot = () => {
   }
 
   try {
-    const response = await API.post("/reset-password", {
+    const response = await JavaAPI.post("/auth/reset-password", {
       userId: formData.userId,
       password: formData.newPassword,
     });

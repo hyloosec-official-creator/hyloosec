@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import API from "../../api/axios.js";
+import { JavaAPI } from "../../api/api.js";
 import { Eye, EyeOff } from "lucide-react";
 import SecurityModal from "./LoginSecurityModal/SecurityModal.jsx";
 import Logo from "../../assets/images/logo/logo.png";
@@ -31,7 +31,7 @@ const Login = () => {
     console.log("Login attempt started with:", formData.userId); 
     try {
       setIsLoadingButton(true);
-      const response = await API.post("/api/auth/login", formData);
+      const response = await JavaAPI.post("/auth/login", formData);
       console.log("Server Response:", response.data);
       if (response.status === 200) {
         console.log("Dispatching loginUser action...", response.data); 
