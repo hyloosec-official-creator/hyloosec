@@ -2,6 +2,7 @@ import React, { useRef, useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { logout, loginUser } from "../../../Slice/authSlice";
 import { CiUser, CiEdit, CiSaveUp2 } from "react-icons/ci";
+import { JavaAPI } from "../../../api/api";
 import socket from "../../../socket";
 import axios from "axios";
 import "../../css/Settings.css";
@@ -58,8 +59,8 @@ const Settings = ({ isDarkMode, setIsDarkMode }) => {
     try {
       setUploading(true);
       // Settings.jsx line 57 ko change karke axios use karein
-      const response = await axios.post(
-        `https://HylooSec-spring-backend.onrender.com/api/user/upload-profile`,
+      const response = await JavaAPI.post(
+        `/user/upload-profile`,
         formData,
         {
           headers: {
@@ -80,8 +81,8 @@ const Settings = ({ isDarkMode, setIsDarkMode }) => {
   const handleBioUpdate = async () => {
     const previousBio = user.bio;
     try {
-      await axios.put(
-        `https://HylooSec-spring-backend.onrender.com/api/user/update-bio`,
+     await JavaAPI.post(
+        `/user/update-bio`,
         {
           userId: user.userId,
           bio: newBio,

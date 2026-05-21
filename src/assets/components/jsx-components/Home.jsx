@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import socket from "../../../socket";
 import axios from "axios";
-import API from "../../../api/api";
+import { MongoAPI, JavaAPI } from "../../../api/api";
 import {
   generateAESKey,
   encryptFileNative,
@@ -75,7 +75,7 @@ const Home = () => {
         return;
       }
       try {
-        const mongoRes = await API.get(`/conversations/${currentUser.userId}`);
+        const mongoRes = await MongoAPI.get(`/conversations/${currentUser.userId}`);
         console.log("Mongo Conversations Data:", mongoRes.data);
         const conversations = mongoRes.data;
 
@@ -89,7 +89,7 @@ const Home = () => {
             conv.participants.find((id) => id !== currentUser.userId),
           );
 
-          const javaRes = await API.post(
+          const javaRes = await JavaAPI.post(
             "/user/bulk-profiles",
             contactIds,
           );
@@ -276,7 +276,7 @@ const Home = () => {
       (!targetChat.messages || targetChat.messages.length === 0)
     ) {
       try {
-        const res = await API.get(`/messages/${currentUser.userId}/${id}`);
+        const res = await MongoAPI.get(`/messages/${currentUser.userId}/${id}`);
 
         // Ensure we pass BOTH the chatId and the messages
         dispatch(setMessagesForChat({ chatId: id, messages: res.data }));
@@ -370,7 +370,7 @@ const Home = () => {
           const formData = new FormData();
           formData.append("files", finalBlob, f.name + ".enc"); // extension badal di security ke liye
 
-          const mediaRes = await API.post(
+          const mediaRes = await JavaAPI.post(
             "/media/upload",
             formData,
             {
@@ -392,7 +392,7 @@ const Home = () => {
       }
 
       // 2. Final Payload to Node.js
-      const response = await API.post("/messages/send", {
+      const response = await MongoAPI.post("/messages/send", {
         senderId: String(currentUser.userId),
         receiverId: String(chatId),
         textForReceiver: newMessage.textForReceiver,
