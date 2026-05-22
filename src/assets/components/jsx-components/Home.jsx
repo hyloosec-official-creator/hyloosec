@@ -68,6 +68,8 @@ const Home = () => {
   // 1. INITIAL LOAD
   useEffect(() => {
     const initializeSidebar = async () => {
+      console.log("--- DEBUG START ---");
+  console.log("JavaAPI Config:", JavaAPI.defaults);
       setIsInitialLoading(true);
       console.log("Home Component Mounted. User ID:", currentUser?.userId);
       if (!currentUser?.userId) {

@@ -1,6 +1,6 @@
 import axios from "axios";
-import { store } from "../store/store"; 
-import { logout } from "../Slice/authSlice"; 
+import { store } from "../store/store";
+import { logout } from "../Slice/authSlice";
 
 export const MongoAPI = axios.create({
   baseURL: "https://hyloosec-node-backend.onrender.com/api",
@@ -15,17 +15,20 @@ export const JavaAPI = axios.create({
 // 🎯 यहाँ का हेडर ब्लॉक हमने हटा दिया है।
 // अब ब्राउज़र ऑटोमैटिक HttpOnly कुकी भेजेगा, हेडर की कोई जरूरत नहीं!
 JavaAPI.interceptors.request.use(
+  
   (config) => {
-    return config; 
+    console.log("📤 [API OUT]: Sending " + config.method.toUpperCase() + " to " + config.url);
+    console.log("🔗 [API CREDENTIALS]: withCredentials = " + config.withCredentials);
+    return config;
   },
-  (error) => Promise.reject(error)
+  (error) => Promise.reject(error),
 );
 
 MongoAPI.interceptors.request.use(
   (config) => {
     return config;
   },
-  (error) => Promise.reject(error)
+  (error) => Promise.reject(error),
 );
 
 const addResponseInterceptor = (instance) => {
@@ -39,7 +42,7 @@ const addResponseInterceptor = (instance) => {
         window.location.reload();
       }
       return Promise.reject(error);
-    }
+    },
   );
 };
 

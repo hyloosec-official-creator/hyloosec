@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
 import "./UserInfo.css";
-import axios from "axios";
 import { CiUser } from "react-icons/ci";
 import { useSelector } from "react-redux";
+import { JavaAPI } from "../../../../../api/api";
 
 const UserInfo = ({ activeChat, onClose }) => {
   const currentUser = useSelector((state) => state.auth.user);
@@ -17,8 +17,8 @@ const UserInfo = ({ activeChat, onClose }) => {
 
   const fetchBio = async () => {
     try {
-      const response = await axios.get(
-        `https://HylooSec-spring-backend.onrender.com/api/user/profile/${targetUserId}`
+      const response = await JavaAPI.get(
+        `/user/profile/${targetUserId}`
       );
 
       setOtherUserBio(response.data?.bio ?? null);

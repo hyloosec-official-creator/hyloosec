@@ -1,8 +1,9 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
+import { MongoAPI } from "../../api/api";
 
 export const fetchChats = createAsyncThunk("chat/fetchChats", async () => {
-  const response = await axios.get("/api/chats");
+  const response = await MongoAPI("/chats");
   return response.data;
 });
 
