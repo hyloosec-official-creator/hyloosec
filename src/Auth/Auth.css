@@ -120,7 +120,7 @@ input::-ms-clear {
   flex-direction: column;
   gap: 15px;
   width: 100%;
-  padding: 20px; /* Thoda sa breathing space */
+  padding: 0px 8px; /* Thoda sa breathing space */
 
   /* --- CRITICAL FIXES --- */
   flex: 1; /* Card ki bachi hui jagah lega */
@@ -365,6 +365,76 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   }
 }
 
+.about-full-page {
+  background: white !important;
+  width: 100%;
+  height: 100vh; /* स्क्रीन की पूरी हाइट */
+  overflow-y: auto; /* यह सबसे महत्वपूर्ण है: पेज को स्क्रॉल करने की अनुमति देता है */
+  display: block;
+  padding: 0;
+  margin: 0;
+}
+
+.about-page-wrapper {
+  background: none !important;
+  box-shadow: none !important;
+  border: none !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  height: auto !important; /* कंटेंट जितना लंबा हो, पेज उतना बड़ा होगा */
+  padding: 0 !important;
+  margin: 0 !important;
+  display: block !important;
+}
+
+/* About Page Specific Styles */
+.about-content {
+  padding: 2rem;
+  max-width: 800px;
+  margin: 0 auto;
+  line-height: 1.6;
+  color: #333;
+}
+
+.about-intro {
+  font-size: 1.2rem;
+}
+
+.about-cta {
+  margin-top: 40px;
+  padding: 20px;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  border: 1px solid #dee2e6;
+  text-align: center;
+}
+
+.cta-btn {
+  display: inline-block;
+  padding: 10px 20px;
+  background-color: #007bff;
+  color: white;
+  border-radius: 5px;
+  border: none;
+  cursor: pointer;
+  font-weight: bold;
+  margin-top: 10px;
+}
+
+.back-btn {
+  margin-top: 30px;
+  background: none;
+  border: none;
+  color: #007bff;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 1rem;
+}
+
+.back-btn:hover {
+  text-decoration: underline;
+}
+
 /* --- Global & Premium Scrollbar (Pure App ke liye) --- */
 ::-webkit-scrollbar {
   width: 5px; /* Bahut patla aur elegant */
@@ -384,6 +454,8 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   scrollbar-width: thin;
   scrollbar-color: var(--logo-purple) transparent;
 }
+
+
 @media (max-width: 800px) {
   .auth-card {
     background: white;
@@ -409,5 +481,44 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   }
   .verify {
     padding-top: 40px;
+  }
+  .about-content {
+    padding: 2rem 1rem; /* मोबाइल पर पैडिंग कम की ताकि ज्यादा जगह मिले */
+    line-height: 1.5;
+  }
+
+  .about-content h1 {
+    font-size: 1.8rem; /* मोबाइल स्क्रीन के लिए हेडिंग छोटी की */
+    margin-bottom: 1rem;
+  }
+
+  .about-content h2 {
+    font-size: 1.4rem;
+    margin-top: 1.5rem;
+  }
+
+  .about-intro {
+    font-size: 1rem !important; /* मोबाइल पर टेक्स्ट साइज़ थोड़ा कम */
+  }
+
+  .about-cta {
+    padding: 15px;
+    margin-top: 20px;
+  }
+
+  .about-cta h3 {
+    font-size: 1.2rem;
+  }
+
+  .cta-btn {
+    width: 100%; /* बटन को फुल विड्थ का कर दिया ताकि टैप करना आसान हो */
+    padding: 12px;
+  }
+
+  .back-btn {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    padding: 15px 0;
   }
 }

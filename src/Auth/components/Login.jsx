@@ -189,6 +189,12 @@ const Login = () => {
         >
           New to HylooSec? Create an account
         </button>
+        <span
+          onClick={() => dispatch(setView("about"))}
+          style={{ cursor: "pointer", fontSize: "0.85rem", color: "#666666" , padding:"6px 0px 0px 0px" , margin:"6px 0px 0px 0px"}}
+        >
+          What is HylooSec? Learn more
+        </span>
       </form>
 
       {showModal && (
