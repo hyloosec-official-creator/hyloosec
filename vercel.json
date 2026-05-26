@@ -3,7 +3,8 @@
     {
       "source": "/(.*)",
       "destination": "https://www.hyloosec.online/$1",
-      "permanent": true
+      "permanent": true,
+      "statusCode": 301
     }
   ]
 }
