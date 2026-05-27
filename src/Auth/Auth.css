@@ -10,7 +10,11 @@
 body {
   margin: 0;
   padding: 0;
-  background-color: var(--bg-dark);
+  background-image: url("./../assets/images/image/chat-background.png");
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
 }
 
 /* --- 2. Main Page Layout --- */
