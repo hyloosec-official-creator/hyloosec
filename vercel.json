@@ -1,8 +1,14 @@
 {
   "redirects": [
     {
-      "source": "/(.*)",
-      "destination": "https://www.hyloosec.online/$1",
+      "source": "/:path*",
+      "has": [
+        {
+          "type": "host",
+          "value": "hyloosec.online"
+        }
+      ],
+      "destination": "https://www.hyloosec.online/:path*",
       "permanent": true
     }
   ]

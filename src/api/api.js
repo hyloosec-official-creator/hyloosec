@@ -2,34 +2,33 @@ import axios from "axios";
 import { store } from "../store/store";
 import { logout } from "../Slice/authSlice";
 
+// अब हम सीधे अपने सब-डोमेन का उपयोग कर रहे हैं
 const API_ENDPOINTS = {
   JAVA: {
-    primary: "https://api.hyloosec.online/api", 
-    secondary: "https://hyloosec-spring-backend-production.up.railway.app/api"
+    primary: "https://api.hyloosec.online/api" // Nginx इसे इंटरनली हैंडल करेगा
   },
   MONGO: {
-    primary: "https://node.hyloosec.online/api",
-    secondary: "https://hyloosec-node-backend-production.up.railway.app/api"
+    primary: "https://node.hyloosec.online/api" // Nginx इसे इंटरनली हैंडल करेगा
   }
 };
 
+export const MongoAPI = axios.create({ 
+  baseURL: API_ENDPOINTS.MONGO.primary, 
+  withCredentials: true 
+});
 
-export const MongoAPI = axios.create({ baseURL: API_ENDPOINTS.MONGO.primary, withCredentials: true });
-export const JavaAPI = axios.create({ baseURL: API_ENDPOINTS.JAVA.primary, withCredentials: true });
+export const JavaAPI = axios.create({ 
+  baseURL: API_ENDPOINTS.JAVA.primary, 
+  withCredentials: true 
+});
 
-
-const setupFailover = (instance, endpoints) => {
+const setupAuthInterceptors = (instance) => {
   instance.interceptors.response.use(
     (response) => response,
     async (error) => {
-      const { config, response } = error;
+      const { response } = error;
 
-      if ((!response || response.status >= 500) && !config._isRetry) {
-        config._isRetry = true;
-        config.baseURL = endpoints.secondary; 
-        console.warn("⚠️ Primary down, switching to Railway:", config.baseURL);
-        return instance(config);
-      }
+      // 401 एरर पर ऑथेंटिकेशन हैंडलिंग
       if (response && response.status === 401) {
         store.dispatch(logout());
         localStorage.clear();
@@ -40,5 +39,5 @@ const setupFailover = (instance, endpoints) => {
   );
 };
 
-setupFailover(JavaAPI, API_ENDPOINTS.JAVA);
-setupFailover(MongoAPI, API_ENDPOINTS.MONGO);
+setupAuthInterceptors(JavaAPI);
+setupAuthInterceptors(MongoAPI);
