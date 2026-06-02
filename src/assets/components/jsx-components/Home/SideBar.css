@@ -2,7 +2,7 @@
   display: flex;
   width: 100vw;
   overflow: hidden;
-  background-image: url("../../../images/image/chat-background.png");
+  background-color: transparent;
 }
 
 .sidebar {
