@@ -4,7 +4,13 @@ import { useDispatch, useSelector } from "react-redux";
 import { CiUser } from "react-icons/ci";
 import { PiSealCheckLight, PiSealCheckFill } from "react-icons/pi";
 import "./ChatWindow.css";
-import { encryptText, decryptText } from "../../../../utils/cryptoUtils.js";
+import {
+  encryptText,
+  decryptFileInChunks,
+  decryptFileName,
+  decryptText,
+  base64ToUint8Array,
+} from "../../../../utils/cryptoUtils";
 import UserInfo from "./chatWindowChilds/UserInfo";
 import FileMessage from "./chatWindowChilds/FileMessage";
 import {
@@ -49,6 +55,7 @@ const getMessageDateLabel = (date) => {
 
 const DecryptedText = ({ text, privateKey }) => {
   const [decrypted, setDecrypted] = useState("Decrypting...");
+  const [isExpanded, setIsExpanded] = useState(false);
 
   useEffect(() => {
     const handleDecrypt = async () => {
@@ -59,7 +66,27 @@ const DecryptedText = ({ text, privateKey }) => {
     handleDecrypt();
   }, [text, privateKey]);
 
-  return <p>{decrypted}</p>;
+  const limit = 200;
+  const showMore = decrypted.length > limit;
+  const displayText = isExpanded
+    ? decrypted
+    : decrypted.substring(0, limit) + "";
+
+  return (
+    <div className="text-content-wrapper">
+      <p style={{ whiteSpace: "pre-wrap", display: "inline" }}>{displayText}</p>
+      {showMore && (
+        <span className="read-more-wrapper">
+          <span
+            className="read-more-btn"
+            onClick={() => setIsExpanded(!isExpanded)}
+          >
+            {isExpanded ? " Read Less" : " Read More"}
+          </span>
+        </span>
+      )}
+    </div>
+  );
 };
 
 const ChatWindow = ({
@@ -116,6 +143,10 @@ const ChatWindow = ({
       return () => clearTimeout(timer);
     }
   }, [messages, displayId]); // Added displayId to reset context
+
+  useEffect(() => {
+    console.log("Active Files in State:", activeFile);
+  }, [activeFile]);
 
   useEffect(() => {
     const handleStatusUpdate = ({ chatId, messageId, status, newId, dbId }) => {
@@ -244,6 +275,18 @@ const ChatWindow = ({
   /* ================= HANDLERS ================= */
 
   const handleSendMessage = async () => {
+    const MAX_SIZE = 10 * 1024 * 1024;
+    const hasOversizedFiles = activeFile.some(
+      (f) => (f.rawFile?.size || 0) > MAX_SIZE,
+    );
+
+    if (hasOversizedFiles) {
+      alert(
+        "⚠️ Note: Files larger than 10MB are not supported on 'HylooSec'. Please remove the files highlighted with a red border to proceed.",
+      );
+      return;
+    }
+
     if (inputText.trim() === "" && activeFile.length === 0) return;
     if (!activeChat?.publicKey) {
       console.error("Encryption fail: Receiver ki public key nahi mili!");
@@ -673,32 +716,44 @@ const ChatWindow = ({
             {/* Multi-File Upload Preview */}
             {activeFile.length > 0 && (
               <div className="multi-preview-wrapper">
-                {activeFile.map((f, i) => (
-                  <div key={i} className="file-preview-container">
-                    {f.type?.startsWith("image/") ? (
-                      <img src={f.preview} alt="preview" />
-                    ) : f.type?.startsWith("video/") ? (
-                      <video
-                        src={f.preview}
-                        className="video-thumbnail-preview"
-                        muted
-                      />
-                    ) : (
-                      <div className="document-thumbnail-preview">
-                        <i className="ph ph-file-pdf"></i>
-                      </div>
-                    )}
-                    <button
-                      onClick={() =>
-                        dispatch(
-                          removeSingleFile({ chatId: displayId, index: i }),
-                        )
-                      }
+                {activeFile.map((f, i) => {
+                  const fileSize = f.rawFile ? f.rawFile.size : 0;
+                  const isOversized = fileSize > 10 * 1024 * 1024;
+                  return (
+                    <div
+                      key={i}
+                      className={`file-preview-container ${isOversized ? "oversized" : ""}`}
                     >
-                      ×
-                    </button>
-                  </div>
-                ))}
+                      {isOversized && (
+                        <div className="error-badge">Too Large</div>
+                      )}
+
+                      {f.type?.startsWith("image/") ? (
+                        <img src={f.preview} alt="preview" />
+                      ) : f.type?.startsWith("video/") ? (
+                        <video
+                          src={f.preview}
+                          className="video-thumbnail-preview"
+                          muted
+                        />
+                      ) : (
+                        <div className="document-thumbnail-preview">
+                          <i className="ph ph-file-pdf"></i>
+                        </div>
+                      )}
+
+                      <button
+                        onClick={() =>
+                          dispatch(
+                            removeSingleFile({ chatId: displayId, index: i }),
+                          )
+                        }
+                      >
+                        ×
+                      </button>
+                    </div>
+                  );
+                })}
               </div>
             )}
 

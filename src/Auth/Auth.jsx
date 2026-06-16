@@ -12,16 +12,20 @@ const Auth = () => {
   const { view } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
 
-  // 'about' होने पर सिर्फ 'about-page-wrapper' क्लास लगेगी, 'auth-card' नहीं।
   const cardClass =
     view === "about" ? "about-page-wrapper" : `auth-card ${view}-view-active`;
 
   // Auth.jsx के अंदर
   useEffect(() => {
-    if (window.location.pathname === "/about") {
-      dispatch(setView("about"));
-    }
-  }, [dispatch]);
+  if (window.location.pathname === "/about" && view !== "about") {
+    dispatch(setView("about"));
+  }
+}, [dispatch, view]);
+
+const goToAbout = () => {
+  window.history.pushState({}, "", "/about"); 
+  dispatch(setView("about"));
+};
 
   return (
     <div className={view === "about" ? "about-full-page" : "auth-full-page"}>

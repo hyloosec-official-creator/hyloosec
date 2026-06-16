@@ -2,23 +2,25 @@ import axios from "axios";
 import { store } from "../store/store";
 import { logout } from "../Slice/authSlice";
 
-// अब हम सीधे अपने सब-डोमेन का उपयोग कर रहे हैं
+const USE_LOCAL_SERVER = true; 
+
 const API_ENDPOINTS = {
-  JAVA: {
-    primary: "https://api.hyloosec.online/api" // Nginx इसे इंटरनली हैंडल करेगा
-  },
-  MONGO: {
-    primary: "https://node.hyloosec.online/api" // Nginx इसे इंटरनली हैंडल करेगा
-  }
+  JAVA: USE_LOCAL_SERVER 
+    ? "http://localhost:8082/api" 
+    : "https://api.hyloosec.online/api",
+  MONGO: USE_LOCAL_SERVER 
+    ? "http://localhost:5000/api" 
+    : "https://node.hyloosec.online/api"
 };
+// --- UPDATE END ---
 
 export const MongoAPI = axios.create({ 
-  baseURL: API_ENDPOINTS.MONGO.primary, 
+  baseURL: API_ENDPOINTS.MONGO, 
   withCredentials: true 
 });
 
 export const JavaAPI = axios.create({ 
-  baseURL: API_ENDPOINTS.JAVA.primary, 
+  baseURL: API_ENDPOINTS.JAVA, 
   withCredentials: true 
 });
 

@@ -59,15 +59,11 @@ const Settings = ({ isDarkMode, setIsDarkMode }) => {
     try {
       setUploading(true);
       // Settings.jsx line 57 ko change karke axios use karein
-      const response = await JavaAPI.post(
-        `/user/upload-profile`,
-        formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data", // Multipart bhej rahe hain isliye ye zaroori hai
-          },
+      const response = await JavaAPI.post(`/user/upload-profile`, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data", // Multipart bhej rahe hain isliye ye zaroori hai
         },
-      );
+      });
       dispatch(loginUser({ ...user, profilePic: response.data.imageUrl }));
       showPopup("Profile picture updated successfully!");
     } catch (err) {
@@ -81,13 +77,10 @@ const Settings = ({ isDarkMode, setIsDarkMode }) => {
   const handleBioUpdate = async () => {
     const previousBio = user.bio;
     try {
-     await JavaAPI.post(
-        `/user/update-bio`,
-        {
-          userId: user.userId,
-          bio: newBio,
-        },
-      );
+      await JavaAPI.post(`/user/update-bio`, {
+        userId: user.userId,
+        bio: newBio,
+      });
       dispatch(loginUser({ ...user, bio: newBio }));
       setIsEditingBio(false);
       showPopup("Bio updated successfully!");
@@ -132,7 +125,14 @@ const Settings = ({ isDarkMode, setIsDarkMode }) => {
         <div className="modal-overlay">
           <div className={`modal-box ${modal.type}`}>
             <p>{modal.message}</p>
-            <button onClick={() => setModal({ ...modal, isVisible: false })}>
+            <button
+              type="button"
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                setModal({ ...modal, isVisible: false });
+              }}
+            >
               OK
             </button>
           </div>

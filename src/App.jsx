@@ -43,14 +43,16 @@ const App = () => {
       // Turant false karne ki bajaye, ek minimum delay set karein
       const timer = setTimeout(() => {
         setIsLoading(false);
-        setActiveTab("chats");
       }, 2000); // 2000ms = 2 Seconds (Aap isko adjust kar sakte hain)
 
       return () => clearTimeout(timer); // Cleanup timer if component unmounts
     }
-  }, [user]);
+  }, []);
 
-  // 3. ONLY AFTER ALL HOOKS are declared, you can do conditional returns
+  useEffect(() => {
+    console.log("Current activeTab is:", activeTab);
+  }, [activeTab]);
+
   if (!user) {
     return <Auth />;
   }

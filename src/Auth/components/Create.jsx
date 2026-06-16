@@ -10,6 +10,127 @@ import {
 } from "../../Slice/authSlice.js";
 import { generateKeyPair, encryptWithPin } from "../../utils/cryptoUtils";
 
+const LegalModal = ({ isOpen, onClose, onAccept }) => {
+  const [hasReachedBottom, setHasReachedBottom] = useState(false);
+  const [isCheckboxChecked, setIsCheckboxChecked] = useState(false);
+
+  useEffect(() => {
+    const body = document.querySelector(".modal-body");
+    if (body && body.scrollHeight <= body.clientHeight) {
+      setHasReachedBottom(true);
+    }
+  }, [isOpen]);
+
+  const handleScroll = (e) => {
+    const { scrollTop, scrollHeight, clientHeight } = e.target;
+    if (scrollHeight - scrollTop <= clientHeight + 50) {
+      setHasReachedBottom(true);
+    }
+  };
+
+  if (!isOpen) return null;
+
+  return (
+    <div className="modal-overlay">
+      <div className="modal-content">
+        <div className="modal-header">
+          <button className="cancel-btn" onClick={onClose}>
+            Cancel
+          </button>
+          <button
+            disabled={!hasReachedBottom || !isCheckboxChecked}
+            onClick={onAccept}
+            className={`accept-btn ${hasReachedBottom && isCheckboxChecked ? "active" : ""}`}
+          >
+            Accept & Continue
+          </button>
+        </div>
+        <div className="modal-body" onScroll={handleScroll}>
+          <div className="legal-section">
+            <h3 className="legal-section-header">
+              Legal Notice & Privacy Policy
+            </h3>
+            <p>
+              <strong className="legal-section-heading">
+                1. Data Collection & Minimization:
+              </strong>{" "}
+              By registering, you trust HylooSec with essential data: Username,
+              Father's Name, DOB, and Network Metadata (IP address). We strictly
+              adhere to Data Minimization; we process this information solely
+              for identity verification and protecting your privacy. We do not
+              collect, store, or sell data not required for these purposes.
+            </p>
+
+            <p>
+              <strong className="legal-section-heading">
+                2. Zero-Knowledge Privacy:
+              </strong>{" "}
+              All communications are encrypted client-side. HylooSec operates on
+              a Zero-Knowledge Architecture; we have no technical means to
+              decrypt, access, or monitor your private messages. Your
+              conversations remain private, ensuring complete confidentiality.
+            </p>
+
+            <p>
+              <strong className="legal-section-heading">
+                3. Data Retention & Your Rights:
+              </strong>{" "}
+              We retain your identity verification data only as long as your
+              account is active. Your privacy is a priority; you reserve the
+              right to request the permanent deletion of your account and
+              associated data from our servers at any time.
+            </p>
+
+            <p>
+              <strong className="legal-section-heading">
+                4. Data Security Disclaimer:
+              </strong>{" "}
+              HylooSec is provided "as-is". While we implement robust security
+              measures, users are responsible for maintaining the
+              confidentiality of their credentials. We are not liable for data
+              breaches resulting from user-side negligence or weak password
+              management.
+            </p>
+
+            <p>
+              <strong className="legal-section-heading">
+                5. Third-Party Privacy:
+              </strong>{" "}
+              We strictly do not share your metadata with third-party
+              advertising or analytics networks. Any necessary service
+              integrations are strictly limited to ensuring the operational
+              continuity of the application while maintaining your privacy.
+            </p>
+
+            <p>
+              <strong className="legal-section-heading">
+                6. Governing Privacy Laws:
+              </strong>{" "}
+              Any concerns regarding your privacy shall be addressed exclusively
+              under the laws of India and within the competent courts of{" "}
+              <strong>Varanasi, Uttar Pradesh, India.</strong>
+            </p>
+          </div>
+
+          <div className="legal-checkbox-area">
+            <label className="checkbox-label">
+              <input
+                type="checkbox"
+                disabled={!hasReachedBottom}
+                checked={isCheckboxChecked}
+                onChange={(e) => setIsCheckboxChecked(e.target.checked)}
+              />
+              <span className="checkbox-text">
+                I have read and agree to all terms above.
+              </span>
+            </label>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
 const Create = () => {
   const dispatch = useDispatch();
   const { error } = useSelector((state) => state.auth);
@@ -36,7 +157,25 @@ const Create = () => {
     city: "",
     ip: "",
     timestamp: "",
+    privacyAccepted: false,
   });
+  const [showModal, setShowModal] = useState(false);
+  const [agreed, setAgreed] = useState(false);
+
+  useEffect(() => {
+    if (showModal) {
+      document.body.style.overflow = "hidden";
+      document.body.style.position = "fixed";
+      document.body.style.top = `-${window.scrollY}px`;
+      document.body.style.width = "100%";
+    } else {
+      const scrollY = document.body.style.top;
+      document.body.style.overflow = "unset";
+      document.body.style.position = "static";
+      document.body.style.width = "auto";
+      window.scrollTo(0, parseInt(scrollY || "0") * -1);
+    }
+  }, [showModal]);
 
   useEffect(() => {
     const pass = formData.password;
@@ -165,11 +304,17 @@ const Create = () => {
       return;
     }
 
+    if (!agreed) {
+      dispatch(setAuthError("Please accept the Terms & Privacy Policy."));
+      return;
+    }
+
     try {
       setIsSubmitting(true);
       const { publicKey, privateKey } = await generateKeyPair();
       const finalData = {
         ...formData,
+        privacyAccepted: agreed,
         publicKey: publicKey,
         securityType: securityType,
       };
@@ -215,331 +360,368 @@ const Create = () => {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="create-user fade-in">
-      <h2 className="Welcome">Create Account</h2>
+    <>
+      <form onSubmit={handleSubmit} className="create-user fade-in">
+        <h2 className="Welcome">Create Account</h2>
 
-      <div className="input-form">
-        <input
-          name="username"
-          type="text"
-          placeholder="Full Name"
-          required
-          value={formData.username}
-          onChange={handleChange}
-        />
-        <input
-          name="fatherName"
-          type="text"
-          placeholder="Father's Name"
-          required
-          value={formData.fatherName}
-          onChange={handleChange}
-        />
-        <input
-          name="bio"
-          type="text"
-          placeholder="Bio"
-          required
-          value={formData.bio}
-          onChange={handleChange}
-        />
-        <input
-          name="dob"
-          type="date"
-          required
-          max={
-            new Date(new Date().setFullYear(new Date().getFullYear() - 10))
-              .toISOString()
-              .split("T")[0]
-          }
-          value={formData.dob}
-          onChange={handleChange}
-        />
+        <div className="input-form">
+          <input
+            name="username"
+            type="text"
+            placeholder="Full Name"
+            required
+            value={formData.username}
+            onChange={handleChange}
+          />
+          <input
+            name="fatherName"
+            type="text"
+            placeholder="Father's Name"
+            required
+            value={formData.fatherName}
+            onChange={handleChange}
+          />
+          <input
+            name="bio"
+            type="text"
+            placeholder="Bio"
+            required
+            value={formData.bio}
+            onChange={handleChange}
+          />
+          <input
+            name="dob"
+            type="date"
+            required
+            max={
+              new Date(new Date().setFullYear(new Date().getFullYear() - 10))
+                .toISOString()
+                .split("T")[0]
+            }
+            value={formData.dob}
+            onChange={handleChange}
+          />
 
-        {/* --- SECURITY SELECTION UI --- */}
-        <div
-          className="security-choice-container"
-          style={{ margin: "15px 0", textAlign: "left" }}
-        >
-          <p style={{ fontSize: "0.9rem", color: "#888", marginBottom: "8px" }}>
-            How would you like to secure your chats?
-          </p>
-          <div style={{ display: "flex", gap: "10px" }}>
-            <button
-              type="button"
-              className={`choice-btn ${securityType === "FILE" ? "active" : ""}`}
-              onClick={() => setSecurityType("FILE")}
-              style={{
-                flex: 1,
-                padding: "10px",
-                borderRadius: "8px",
-                border:
-                  securityType === "FILE"
-                    ? "2px solid #6e54ff"
-                    : "1px solid #333",
-                background:
-                  securityType === "FILE" ? "#6e54ff22" : "transparent",
-                cursor: "pointer",
-                color: "black",
-              }}
+          {/* --- SECURITY SELECTION UI --- */}
+          <div
+            className="security-choice-container"
+            style={{ margin: "15px 0", textAlign: "left" }}
+          >
+            <p
+              style={{ fontSize: "0.9rem", color: "#888", marginBottom: "8px" }}
             >
-              <FileKey size={18} style={{ marginBottom: "5px" }} />
-              <br />
-              Download Key
-            </button>
-            <button
-              type="button"
-              className={`choice-btn ${securityType === "PIN" ? "active" : ""}`}
-              onClick={() => setSecurityType("PIN")}
-              style={{
-                flex: 1,
-                padding: "10px",
-                borderRadius: "8px",
-                border:
-                  securityType === "PIN"
-                    ? "2px solid #6e54ff"
-                    : "1px solid #333",
-                background:
-                  securityType === "PIN" ? "#6e54ff22" : "transparent",
-                cursor: "pointer",
-                color: "black",
-              }}
-            >
-              <Lock size={18} style={{ marginBottom: "5px" }} />
-              <br />
-              Cloud PIN
-            </button>
+              How would you like to secure your chats?
+            </p>
+            <div style={{ display: "flex", gap: "10px" }}>
+              <button
+                type="button"
+                className={`choice-btn ${securityType === "FILE" ? "active" : ""}`}
+                onClick={() => setSecurityType("FILE")}
+                style={{
+                  flex: 1,
+                  padding: "10px",
+                  borderRadius: "8px",
+                  border:
+                    securityType === "FILE"
+                      ? "2px solid #6e54ff"
+                      : "1px solid #333",
+                  background:
+                    securityType === "FILE" ? "#6e54ff22" : "transparent",
+                  cursor: "pointer",
+                  color: "black",
+                }}
+              >
+                <FileKey size={18} style={{ marginBottom: "5px" }} />
+                <br />
+                Download Key
+              </button>
+              <button
+                type="button"
+                className={`choice-btn ${securityType === "PIN" ? "active" : ""}`}
+                onClick={() => setSecurityType("PIN")}
+                style={{
+                  flex: 1,
+                  padding: "10px",
+                  borderRadius: "8px",
+                  border:
+                    securityType === "PIN"
+                      ? "2px solid #6e54ff"
+                      : "1px solid #333",
+                  background:
+                    securityType === "PIN" ? "#6e54ff22" : "transparent",
+                  cursor: "pointer",
+                  color: "black",
+                }}
+              >
+                <Lock size={18} style={{ marginBottom: "5px" }} />
+                <br />
+                Cloud PIN
+              </button>
+            </div>
           </div>
-        </div>
 
-        {/* --- PIN INPUT (Only shows if PIN selected) --- */}
-        {securityType === "PIN" && (
+          {/* --- PIN INPUT (Only shows if PIN selected) --- */}
+          {securityType === "PIN" && (
+            <div
+              className="password-wrapper"
+              style={{ position: "relative", width: "100%" }}
+            >
+              <input
+                type={showPin ? "text" : "password"}
+                placeholder="Create 6 Digit Security PIN"
+                maxLength="6"
+                required
+                value={pin}
+                onChange={(e) => setPin(e.target.value.replace(/\D/g, ""))} // Only numbers
+                style={{
+                  width: "100%",
+                  paddingRight: "45px",
+                  borderColor: "#6e54ff",
+                }}
+              />
+              <button
+                type="button"
+                className="eye-button"
+                onClick={() => setShowPin(!showPin)}
+              >
+                {showPin ? <EyeOff size={20} /> : <Eye size={20} />}
+              </button>
+            </div>
+          )}
+
+          <div className="security-section">
+            <select
+              name="securityQuestion"
+              value={formData.securityQuestion}
+              onChange={handleChange}
+              className="security-select"
+              required
+            >
+              <option value="" disabled>
+                Select Security Question
+              </option>
+              <option value="father">What is your Father name?</option>
+              <option value="mother">What is your Mother name?</option>
+              <option value="friend">What is your best friend name?</option>
+              <option value="pet">What is your pet's name?</option>
+              <option value="city">What city were you born in?</option>
+            </select>
+            <input
+              name="securityAnswer"
+              type="text"
+              placeholder="Your Answer"
+              required
+              value={formData.securityAnswer}
+              onChange={handleChange}
+            />
+          </div>
+          {formData.securityQuestion === "father" &&
+            formData.securityAnswer &&
+            formData.fatherName.toLowerCase() !==
+              formData.securityAnswer.toLowerCase() && (
+              <p style={{ color: "orange", fontSize: "0.8rem" }}>
+                ⚠️ Answer must match Father's Name
+              </p>
+            )}
+
           <div
             className="password-wrapper"
             style={{ position: "relative", width: "100%" }}
           >
             <input
-              type={showPin ? "text" : "password"}
-              placeholder="Create 6 Digit Security PIN"
-              maxLength="6"
+              name="password"
+              type={showPassword ? "text" : "password"}
+              placeholder="Password"
               required
-              value={pin}
-              onChange={(e) => setPin(e.target.value.replace(/\D/g, ""))} // Only numbers
-              style={{
-                width: "100%",
-                paddingRight: "45px",
-                borderColor: "#6e54ff",
-              }}
+              value={formData.password}
+              onChange={handleChange}
+              aria-label="Password"
+              onFocus={() => setShowPasswordHint(true)}
+              onBlur={() => setShowPasswordHint(false)}
+              style={{ width: "100%", paddingRight: "45px" }}
             />
             <button
               type="button"
               className="eye-button"
-              onClick={() => setShowPin(!showPin)}
+              onClick={togglePasswordVisibility}
+              aria-label={showPassword ? "Hide password" : "Show password"}
             >
-              {showPin ? <EyeOff size={20} /> : <Eye size={20} />}
+              {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
             </button>
-          </div>
-        )}
+            {showPasswordHint && (
+              <div
+                className="password-hint-box"
+                style={{
+                  position: "absolute",
+                  bottom: "105%",
+                  left: 0,
+                  width: "100%",
+                  background: "#767676",
+                  color: "#fff",
+                  padding: "12px",
+                  borderRadius: "10px",
+                  fontSize: "0.85rem",
+                  zIndex: 100,
+                  boxShadow: "0 10px 25px rgba(0,0,0,0.5)",
+                  border: "1px solid #333",
+                }}
+              >
+                <p
+                  style={{
+                    marginBottom: "8px",
+                    fontWeight: "bold",
+                    borderBottom: "1px solid #444",
+                    paddingBottom: "4px",
+                  }}
+                >
+                  Password Rules:
+                </p>
 
-        <div className="security-section">
-          <select
-            name="securityQuestion"
-            value={formData.securityQuestion}
-            onChange={handleChange}
-            className="security-select"
-            required
-          >
-            <option value="" disabled>
-              Select Security Question
-            </option>
-            <option value="father">What is your Father name?</option>
-            <option value="mother">What is your Mother name?</option>
-            <option value="friend">What is your best friend name?</option>
-            <option value="pet">What is your pet's name?</option>
-            <option value="city">What city were you born in?</option>
-          </select>
-          <input
-            name="securityAnswer"
-            type="text"
-            placeholder="Your Answer"
-            required
-            value={formData.securityAnswer}
-            onChange={handleChange}
-          />
-        </div>
-        {formData.securityQuestion === "father" &&
-          formData.securityAnswer &&
-          formData.fatherName.toLowerCase() !==
-            formData.securityAnswer.toLowerCase() && (
-            <p style={{ color: "orange", fontSize: "0.8rem" }}>
-              ⚠️ Answer must match Father's Name
+                <ul style={{ listStyle: "none", padding: 0, margin: 0 }}>
+                  <RequirementItem
+                    reached={passwordRequirements.length}
+                    label="At least 8 characters"
+                  />
+                  <RequirementItem
+                    reached={passwordRequirements.upper}
+                    label="One Uppercase letter (A-Z)"
+                  />
+                  <RequirementItem
+                    reached={passwordRequirements.lower}
+                    label="One Lowercase letter (a-z)"
+                  />
+                  <RequirementItem
+                    reached={passwordRequirements.number}
+                    label="One Number (0-9)"
+                  />
+                  <RequirementItem
+                    reached={passwordRequirements.special}
+                    label="One Special character (@, #, $, etc.)"
+                  />
+                </ul>
+              </div>
+            )}
+          </div>
+          {formData.password && (
+            <p
+              style={{
+                fontSize: "0.7rem",
+                marginTop: "4px",
+                color:
+                  passwordRequirements.length &&
+                  passwordRequirements.upper &&
+                  passwordRequirements.number &&
+                  passwordRequirements.special
+                    ? "#4ade80"
+                    : "#fb7185",
+              }}
+            >
+              Strength: {passwordStrength}
             </p>
           )}
 
-        <div
-          className="password-wrapper"
-          style={{ position: "relative", width: "100%" }}
-        >
-          <input
-            name="password"
-            type={showPassword ? "text" : "password"}
-            placeholder="Password"
-            required
-            value={formData.password}
-            onChange={handleChange}
-            aria-label="Password"
-            onFocus={() => setShowPasswordHint(true)}
-            onBlur={() => setShowPasswordHint(false)}
-            style={{ width: "100%", paddingRight: "45px" }}
-          />
-          <button
-            type="button"
-            className="eye-button"
-            onClick={togglePasswordVisibility}
-            aria-label={showPassword ? "Hide password" : "Show password"}
+          {/* Confirm Password Field */}
+          <div
+            className="password-wrapper"
+            style={{ position: "relative", width: "100%" }}
           >
-            {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
-          </button>
-          {showPasswordHint && (
-            <div
-              className="password-hint-box"
-              style={{
-                position: "absolute",
-                bottom: "105%",
-                left: 0,
-                width: "100%",
-                background: "#767676",
-                color: "#fff",
-                padding: "12px",
-                borderRadius: "10px",
-                fontSize: "0.85rem",
-                zIndex: 100,
-                boxShadow: "0 10px 25px rgba(0,0,0,0.5)",
-                border: "1px solid #333",
-              }}
+            <input
+              name="confirmPassword"
+              type={showConfirmPassword ? "text" : "password"} // Linked to correct state
+              placeholder="Confirm Password"
+              required
+              value={formData.confirmPassword}
+              onChange={handleChange}
+              aria-label="Confirm Password"
+              style={{ width: "100%", paddingRight: "45px" }}
+            />
+            <button
+              type="button"
+              className="eye-button"
+              onClick={toggleConfirmPasswordVisibility} // Linked to correct function
+              aria-label={
+                showConfirmPassword
+                  ? "Hide confirm password"
+                  : "Show confirm password"
+              }
             >
-              <p
-                style={{
-                  marginBottom: "8px",
-                  fontWeight: "bold",
-                  borderBottom: "1px solid #444",
-                  paddingBottom: "4px",
-                }}
-              >
-                Password Rules:
-              </p>
+              {showConfirmPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+            </button>
+          </div>
 
-              <ul style={{ listStyle: "none", padding: 0, margin: 0 }}>
-                <RequirementItem
-                  reached={passwordRequirements.length}
-                  label="At least 8 characters"
-                />
-                <RequirementItem
-                  reached={passwordRequirements.upper}
-                  label="One Uppercase letter (A-Z)"
-                />
-                <RequirementItem
-                  reached={passwordRequirements.lower}
-                  label="One Lowercase letter (a-z)"
-                />
-                <RequirementItem
-                  reached={passwordRequirements.number}
-                  label="One Number (0-9)"
-                />
-                <RequirementItem
-                  reached={passwordRequirements.special}
-                  label="One Special character (@, #, $, etc.)"
-                />
-              </ul>
-            </div>
+          {error && (
+            <p className="error-message" role="alert">
+              {error}
+            </p>
           )}
         </div>
-        {formData.password && (
-          <p
-            style={{
-              fontSize: "0.7rem",
-              marginTop: "4px",
-              color:
-                passwordRequirements.length &&
-                passwordRequirements.upper &&
-                passwordRequirements.number &&
-                passwordRequirements.special
-                  ? "#4ade80"
-                  : "#fb7185",
-            }}
-          >
-            Strength: {passwordStrength}
-          </p>
-        )}
 
-        {/* Confirm Password Field */}
-        <div
-          className="password-wrapper"
-          style={{ position: "relative", width: "100%" }}
-        >
-          <input
-            name="confirmPassword"
-            type={showConfirmPassword ? "text" : "password"} // Linked to correct state
-            placeholder="Confirm Password"
-            required
-            value={formData.confirmPassword}
-            onChange={handleChange}
-            aria-label="Confirm Password"
-            style={{ width: "100%", paddingRight: "45px" }}
-          />
-          <button
-            type="button"
-            className="eye-button"
-            onClick={toggleConfirmPasswordVisibility} // Linked to correct function
-            aria-label={
-              showConfirmPassword
-                ? "Hide confirm password"
-                : "Show confirm password"
-            }
-          >
-            {showConfirmPassword ? <EyeOff size={20} /> : <Eye size={20} />}
-          </button>
+        <div className="legal-checkbox-wrapper">
+          <label className={`legal-label ${agreed ? "checked" : ""}`}>
+            <input
+              type="checkbox"
+              checked={agreed}
+              onChange={(e) => {
+                if (e.target.checked) setShowModal(true);
+                else setAgreed(false);
+              }}
+            />
+            <span className="checkbox-text2">
+              I agree to the <strong>Privacy Policy</strong> and acknowledge
+              that my data is <strong>E2EE</strong>.
+            </span>
+          </label>
         </div>
 
-        {error && (
-          <p className="error-message" role="alert">
-            {error}
+        {!isLocating && !isSubmitting && (
+          <p
+            style={{
+              fontSize: "0.75rem",
+              color: "#6e54ff",
+              marginTop: "8px",
+              fontWeight: "500",
+            }}
+          >
+            💡 Click "Join HylooSec" to automatically download your
+            password-protected recovery PDF.
           </p>
         )}
-      </div>
 
-      <div style={{ fontSize: "0.75rem", color: "#888", textAlign: "left", margin: "10px 0" }}>
-        🔒 <strong>Privacy Note:</strong> We securely read your approximate network region and IP solely for auditing your recovery file's authenticity.
-      </div>
+        <button
+          type="submit"
+          className="auth-btn"
+          disabled={isLocating || isSubmitting || !agreed}
+        >
+          {isLocating ? (
+            "Fetching Location..."
+          ) : isSubmitting ? (
+            <span className="login-btn-loader"></span>
+          ) : (
+            "Join HylooSec"
+          )}
+        </button>
 
-      <button
-        type="submit"
-        className="auth-btn"
-        disabled={isLocating || isSubmitting}
-      >
-        {isLocating ? (
-          "Fetching Location..."
-        ) : isSubmitting ? (
-          <span className="login-btn-loader"></span>
-        ) : (
-          "Join HylooSec"
-        )}
-      </button>
+        <button
+          type="button"
+          onClick={() => dispatch(setView("login"))}
+          className="toggle-btn"
+        >
+          Already have an account? Login
+        </button>
+      </form>
 
-      {!isLocating && !isSubmitting && (
-        <p style={{ fontSize: "0.75rem", color: "#6e54ff", marginTop: "8px", fontWeight: "500" }}>
-          💡 Click "Join HylooSec" to automatically download your password-protected recovery PDF.
-        </p>
-      )}
-
-      <button
-        type="button"
-        onClick={() => dispatch(setView("login"))}
-        className="toggle-btn"
-      >
-        Already have an account? Login
-      </button>
-    </form>
+      <LegalModal
+        isOpen={showModal}
+        onClose={() => {
+          setShowModal(false);
+          setAgreed(false);
+        }}
+        onAccept={() => {
+          setAgreed(true);
+          setShowModal(false);
+        }}
+      />
+    </>
   );
 };
 

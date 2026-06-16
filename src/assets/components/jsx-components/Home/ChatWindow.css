@@ -422,6 +422,20 @@
   flex-shrink: 0;
 }
 
+.error-badge {
+  position: absolute;
+  top: 48px;
+  right: -8px;
+  background: #ff4d4d;
+  color: white;
+  font-size: 9px;
+  font-weight: bold;
+  padding: 2px 6px;
+  border-radius: 10px;
+  z-index: 10;
+  pointer-events: none;
+}
+
 .file-preview-container img,
 .video-thumbnail-preview,
 .document-thumbnail-preview {
@@ -430,6 +444,12 @@
   object-fit: cover;
   border-radius: 8px;
   border: 1px solid #4ebaa1;
+}
+
+.file-preview-container.oversized img,
+.file-preview-container.oversized .video-thumbnail-preview,
+.file-preview-container.oversized .document-thumbnail-preview {
+  border-color: #ff4d4d !important; 
 }
 
 .file-preview-container button {
@@ -859,6 +879,22 @@
   justify-content: flex-end;
   font-size: 0.65rem;
   margin-top: 4px;
+}
+.text-content-wrapper {
+  display: inline;
+}
+
+.read-more-wrapper {
+  display: inline;
+  white-space: nowrap; /* ये बटन को नीचे जाने से रोकेगा */
+}
+
+.read-more-btn {
+  color: #016751;
+  cursor: pointer;
+  margin-left: 5px;
+  font-size: 0.8rem;
+  font-weight: 600;
 }
 
 .spinner-small {

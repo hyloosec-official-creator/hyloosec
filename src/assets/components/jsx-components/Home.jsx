@@ -8,8 +8,10 @@ import axios from "axios";
 import { MongoAPI, JavaAPI } from "../../../api/api";
 import {
   generateAESKey,
-  encryptFileNative,
+  encryptFileInChunks,
   encryptText,
+  encryptFileName,
+  uint8ArrayToBase64,
 } from "../../../utils/cryptoUtils";
 import { setBulkProfiles } from "../../../store/slices/userInfoSlice";
 import { setChatFile, removeChatFile } from "../../../store/slices/fileSlice";
@@ -69,7 +71,7 @@ const Home = () => {
   useEffect(() => {
     const initializeSidebar = async () => {
       console.log("--- DEBUG START ---");
-  console.log("JavaAPI Config:", JavaAPI.defaults);
+      console.log("JavaAPI Config:", JavaAPI.defaults);
       setIsInitialLoading(true);
       console.log("Home Component Mounted. User ID:", currentUser?.userId);
       if (!currentUser?.userId) {
@@ -77,7 +79,9 @@ const Home = () => {
         return;
       }
       try {
-        const mongoRes = await MongoAPI.get(`/conversations/${currentUser.userId}`);
+        const mongoRes = await MongoAPI.get(
+          `/conversations/${currentUser.userId}`,
+        );
         console.log("Mongo Conversations Data:", mongoRes.data);
         const conversations = mongoRes.data;
 
@@ -91,10 +95,7 @@ const Home = () => {
             conv.participants.find((id) => id !== currentUser.userId),
           );
 
-          const javaRes = await JavaAPI.post(
-            "/user/bulk-profiles",
-            contactIds,
-          );
+          const javaRes = await JavaAPI.post("/user/bulk-profiles", contactIds);
           dispatch(setBulkProfiles(javaRes.data));
 
           const formattedChats = javaRes.data.map((user) => {
@@ -239,6 +240,7 @@ const Home = () => {
         socket.off("message_status_updated");
         socket.off("message_status_sync"); // ✅ added
         socket.off("get_online_users");
+        socket.disconnect();
       };
     }
   }, [currentUser?.userId, activeChatId, dispatch]);
@@ -342,23 +344,23 @@ const Home = () => {
 
       if (filesToUpload && filesToUpload.length > 0) {
         for (let f of filesToUpload) {
-          // A. AES Key generate karein (Native)
+          // A. AES Key generate करें
           const aesKey = await generateAESKey();
 
-          // B. Native Chunk Encryption call karein
-          const { finalBlob, aesKeyBase64, ivBase64 } = await encryptFileNative(
-            f.rawFile,
-            aesKey,
-            (percent) => {
-              setUploadProgress((prev) => ({
-                ...prev,
-                [chatId]: { percent, fileName: f.name },
-              }));
-            },
-          );
+          // B. फाइल नेम एन्क्रिप्ट करें
+          const encName = await encryptFileName(f.name, aesKey);
 
-          // C. RSA Encryption (Keys ke liye)
+          // C. Chunked Encryption का उपयोग करें
+          const finalBlob = await encryptFileInChunks(f.rawFile, aesKey);
+
+          // D. RSA Key Wrapping (AES Key को रिसीवर की पब्लिक की से लॉक करें)
           const targetChat = chats.find((c) => String(c.id) === String(chatId));
+          const exportedKey = await window.crypto.subtle.exportKey(
+            "raw",
+            aesKey,
+          );
+          const aesKeyBase64 = uint8ArrayToBase64(new Uint8Array(exportedKey));
+
           const encAesKeyForReceiver = await encryptText(
             aesKeyBase64,
             targetChat.publicKey,
@@ -368,24 +370,22 @@ const Home = () => {
             currentUser.publicKey || currentUser.user.publicKey,
           );
 
-          // D. Spring Boot Upload
+          // E. Spring Boot Upload
           const formData = new FormData();
-          formData.append("files", finalBlob, f.name + ".enc"); // extension badal di security ke liye
+          // अब सर्वर पर एन्क्रिप्टेड नाम के साथ फाइल जाएगी
+          formData.append("files", finalBlob, encName + ".enc");
 
-          const mediaRes = await JavaAPI.post(
-            "/media/upload",
-            formData,
-          );
+          const mediaRes = await JavaAPI.post("/media/upload", formData);
 
-          // E. Sabse Important: Metadata pack karna
+          // F. Metadata pack करें (IV की अब जरूरत नहीं क्योंकि IV फाइल के चंक्स के अंदर है!)
           processedFiles.push({
-            name: f.name,
+            name: encName, // एन्क्रिप्टेड नाम
             url: mediaRes.data[0].url,
             type: f.type,
             size: f.size,
-            iv: ivBase64, // MongoDB mein save hoga
             encAesKeyForReceiver,
             encAesKeyForSender,
+            originalExtension: f.name.split('.').pop(),
           });
         }
       }

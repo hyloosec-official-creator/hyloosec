@@ -5,7 +5,8 @@ const URL = "https://HylooSec-node-backend.onrender.com";
 
 // Create the socket instance
 const socket = io(URL, {
-  autoConnect: false, // We connect manually in Home.jsx
+  autoConnect: false,
+  withCredentials: true, // We connect manually in Home.jsx
 });
 
 // CRITICAL: This "default" export fixes the error in Home.jsx

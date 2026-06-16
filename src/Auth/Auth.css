@@ -180,6 +180,155 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   outline: none;
 }
 
+.legal-checkbox-wrapper { margin: 20px 0; width: 100%; }
+
+.legal-label {
+  display: flex;
+  align-items: center; /* वर्टिकल सेंटर के लिए */
+  gap: 15px;
+  cursor: pointer;
+  padding: 15px;
+  border-radius: 12px;
+  background: #f8f9fa;
+  border: 1px solid #e0e0e0;
+  transition: all 0.3s ease;
+}
+
+/* कस्टमाइज्ड चेकबॉक्स */
+.legal-label input[type="checkbox"] {
+  appearance: none; /* डिफ़ॉल्ट हटाओ */
+  width: 20px;
+  height: 20px;
+  border: 2px solid #6e54ff;
+  border-radius: 4px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0; /* ताकि ये दबे नहीं */
+}
+
+.legal-label input[type="checkbox"]:checked {
+  background: #6e54ff;
+}
+
+/* टिक मार्क बनाना */
+.legal-label input[type="checkbox"]:checked::after {
+  content: '✓';
+  color: white;
+  font-size: 14px;
+}
+
+.checkbox-text2 {
+  font-size: 0.9rem;
+  color: #121212; /* डार्क कलर ताकि साफ़ दिखे */
+  font-weight: 500;
+  line-height: 1.3;
+}
+
+/* बैकग्राउंड को लॉक करने और सुंदर दिखने के लिए */
+.modal-overlay { 
+  position: fixed !important; top: 0 !important; left: 0 !important; 
+  width: 100vw !important; height: 100vh !important; 
+  background: rgba(0, 0, 0, 0.85) !important; 
+  z-index: 999999 !important; 
+  display: flex !important; align-items: center !important; justify-content: center !important; 
+}
+
+.modal-content { 
+  background: #121212 !important; 
+  color: #fff !important; 
+  width: 90% !important; 
+  max-width: 500px !important; 
+  max-height: 80vh !important; /* Modal स्क्रीन से बाहर नहीं जाएगा */
+  border-radius: 15px !important; 
+  border: 1px solid #444 !important;
+  display: flex !important; 
+  flex-direction: column !important;
+  position: relative !important;
+  overflow: hidden; /* यह जरूरी है */
+}
+
+.modal-header { 
+  display: flex; 
+  justify-content: space-between; 
+  padding: 15px 20px; 
+  border-bottom: 1px solid #333; 
+  background: #1a1a1a;
+  gap: 10px; /* बटनों के बीच थोड़ा स्पेस */
+}
+
+.cancel-btn { 
+  background: transparent !important; 
+  color: #ff4d4d !important; /* रेड कलर ताकि ध्यान जाए */
+  border: 1px solid #ff4d4d !important; 
+  padding: 8px 16px; 
+  border-radius: 6px; 
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.cancel-btn:hover {
+  background: #ff4d4d !important;
+  color: #fff !important;
+}
+
+.modal-body { 
+  flex: 1 !important; 
+  overflow-y: auto !important; 
+  padding: 25px !important; 
+  color: #ccc !important;
+  line-height: 1.6 !important; /* पढ़ने में आसानी के लिए */
+}
+
+.legal-section { margin-bottom: 25px; }
+
+.legal-section-header { 
+  color: #6e54ff !important; 
+  margin-bottom: 15px !important; 
+  font-size: 1.2rem !important; 
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.legal-section-heading{
+  color: #38ef00 !important; 
+  font-size: 1rem !important; 
+  letter-spacing: 1px;
+}
+
+.legal-checkbox-area { 
+  background: #1a1a1a; 
+  padding: 15px; 
+  border-radius: 8px; 
+  border: 1px solid #333;
+}
+
+.checkbox-label { 
+  display: flex; align-items: center; gap: 12px; cursor: pointer;
+}
+
+.checkbox-text { 
+  font-size: 0.95rem; color: #fff; font-weight: 500;
+}
+
+.accept-btn { 
+  background: #333; 
+  color: #888; 
+  border: none; 
+  padding: 8px 16px; 
+  border-radius: 6px; 
+  font-weight: bold;
+  cursor: not-allowed; /* जब डिसेबल हो तो पता चले */
+  transition: 0.3s;
+}
+
+.accept-btn.active { 
+  background: #6e54ff !important; 
+  color: #fff !important; 
+  cursor: pointer; 
+}
+
 /* --- 6. Inputs & Buttons --- */
 .login input {
   width: 100%;
