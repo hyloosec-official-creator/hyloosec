@@ -330,6 +330,21 @@
   color: #ffffff;
 }
 
+/* Settings.css */
+
+.app-version-footer {
+  text-align: center;
+  margin-top: 40px;
+  padding-bottom: 20px;
+}
+
+.app-version-footer p {
+  font-size: 0.8rem;
+  color: #777777; /* हल्का ग्रे रंग जो आँखों पर चुभे नहीं */
+  font-weight: 500;
+  letter-spacing: 0.5px;
+}
+
 /* --- Modal Overlay (Blur Background) --- */
 .modal-overlay {
   position: fixed;

@@ -240,6 +240,10 @@ const Settings = ({ isDarkMode, setIsDarkMode }) => {
           Logout
         </button>
       </div>
+
+      <div className="app-version-footer">
+        <p>HylooSec v1.0.0</p>
+      </div>
     </div>
   );
 };
