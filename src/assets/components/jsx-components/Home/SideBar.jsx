@@ -223,7 +223,7 @@ const SideBar = ({
           <SidebarSkeleton />
         ) : chats.length > 0 ? (
           chats.map((chat) => {
-            const imageSrc = chat.avatar || chat.profilePic;
+            const imageSrc = chat.avatar || chat.profilePic || "";
             const lastMsgObj =
               chat.messages && chat.messages.length > 0
                 ? chat.messages[chat.messages.length - 1]
@@ -268,7 +268,7 @@ const SideBar = ({
                 <div className="chat-info">
                   <div className="chat-info-header">
                     <h4 className={isActuallyUnread ? "unread-name-bold" : ""}>
-                      {chat.name || chat.username || "Unknown User"}
+                      {chat.name || chat.username || `User ${chat.id}`}
                     </h4>
 
                     {chat.online ? (

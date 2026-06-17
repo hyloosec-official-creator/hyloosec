@@ -1,13 +1,16 @@
 import { io } from "socket.io-client";
 
-// This must match your Server's port (5000)
-const URL = "https://HylooSec-node-backend.onrender.com";
+// वही लॉजिक जो तुम्हारे API फाइल में है
+const USE_LOCAL_SERVER = false; 
+
+const SOCKET_URL = USE_LOCAL_SERVER 
+  ? "http://localhost:5000" 
+  : import.meta.env.VITE_MONGO_API_URL; // यहाँ अपनी प्रोडक्शन वाली URL डालें
 
 // Create the socket instance
-const socket = io(URL, {
+const socket = io(SOCKET_URL, {
   autoConnect: false,
-  withCredentials: true, // We connect manually in Home.jsx
+  withCredentials: true,
 });
 
-// CRITICAL: This "default" export fixes the error in Home.jsx
 export default socket;

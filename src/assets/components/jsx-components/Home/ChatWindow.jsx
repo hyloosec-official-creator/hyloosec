@@ -574,6 +574,38 @@ const ChatWindow = ({
         <>
           {/* ---------- MESSAGE AREA ---------- */}
           <section className="message-area">
+            <div className="empty-chat-welcome">
+              <div className="security-badge">
+                <i className="ph ph-lock-key-fill"></i>
+                <span>End-to-end encrypted</span>
+              </div>
+
+              <div className="welcome-content">
+                <h2>Start a secure conversation</h2>
+                <p>
+                  Your messages with <strong>{displayName}</strong> are
+                  protected by HylooSec encryption.
+                </p>
+              </div>
+
+              <div className="quick-tips">
+                <div className="tip-item">
+                  <i className="ph ph-shield-check"></i>
+                  <span>Secure</span>
+                </div>
+                <div className="tip-item">
+                  <i className="ph ph-lightning"></i>
+                  <span>Fast</span>
+                </div>
+              </div>
+            </div>
+
+            {messages.length === 0 && (
+              <div className="empty-chat-welcome">
+                <p>Send a message to start the conversation.</p>
+              </div>
+            )}
+
             {messages.map((msg, index) => {
               // Added index
 

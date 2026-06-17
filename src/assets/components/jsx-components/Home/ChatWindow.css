@@ -129,6 +129,79 @@
   background-size: 20px 20px;
 }
 
+.empty-chat-welcome {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  padding: 2rem 2rem 0 2rem;
+  text-align: center;
+  gap: 20px;
+}
+
+.security-badge {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(74, 222, 128, 0.1); /* हल्का हरा बैकग्राउंड */
+  color: #4ade80;
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 500;
+  border: 1px solid rgba(74, 222, 128, 0.2);
+}
+
+.welcome-content h2 {
+  font-size: 1.5rem;
+  margin-bottom: 10px;
+  color: #e5e7eb;
+}
+
+.welcome-content p {
+  color: #c3c5c7;
+  font-size: 0.95rem;
+}
+
+.quick-tips {
+  display: flex;
+  gap: 20px;
+  margin-top: 20px;
+}
+
+.tip-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: #6b7280;
+  font-size: 0.85rem;
+}
+
+.tip-item i {
+  color: #3b82f6; /* नीला रंग */
+}
+
+/* खाली चैट के लिए मिनिमल स्टाइल */
+.empty-chat-welcome {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  width: 100%;
+}
+
+.empty-chat-welcome p {
+  color: #666; /* हल्का ग्रे ताकि आँखों को चुभे न */
+  font-size: 14px;
+  background: rgba(255, 255, 255, 0.03); /* बहुत ही हल्का सा बैकग्राउंड */
+  padding: 12px 24px;
+  border-radius: 50px; /* गोलाकार किनारों के लिए */
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  letter-spacing: 0.5px;
+  text-align: center;
+}
+
 .msg {
   max-width: 60%;
   width: fit-content;

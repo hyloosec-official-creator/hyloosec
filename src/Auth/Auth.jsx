@@ -17,15 +17,15 @@ const Auth = () => {
 
   // Auth.jsx के अंदर
   useEffect(() => {
-  if (window.location.pathname === "/about" && view !== "about") {
-    dispatch(setView("about"));
-  }
-}, [dispatch, view]);
+    if (window.location.pathname === "/about" && view !== "about") {
+      dispatch(setView("about"));
+    }
+  }, [dispatch, view]);
 
-const goToAbout = () => {
-  window.history.pushState({}, "", "/about"); 
-  dispatch(setView("about"));
-};
+  const goToAbout = () => {
+    window.history.pushState({}, "", "/about");
+    dispatch(setView("about"));
+  };
 
   return (
     <div className={view === "about" ? "about-full-page" : "auth-full-page"}>

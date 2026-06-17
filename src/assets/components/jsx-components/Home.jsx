@@ -30,7 +30,7 @@ import {
 const EMPTY_ARRAY = [];
 const EMPTY_OBJECT = {};
 
-const Home = () => {
+const Home = ({ activeTab }) => {
   const dispatch = useDispatch();
 
   const token = useSelector((state) => state.auth.token);
@@ -68,6 +68,18 @@ const Home = () => {
     : EMPTY_ARRAY;
 
   // 1. INITIAL LOAD
+useEffect(() => {
+  if (activeChatId && chats.length > 0) {
+    const targetChat = chats.find((c) => String(c.id) === String(activeChatId));
+    
+
+    if (targetChat && (!targetChat.messages || targetChat.messages.length === 0)) {
+      console.log("Auto-restoring active chat...");
+      handleSelectChat(activeChatId);
+    }
+  }
+}, [activeChatId, chats]);
+
   useEffect(() => {
     const initializeSidebar = async () => {
       console.log("--- DEBUG START ---");
@@ -181,15 +193,8 @@ const Home = () => {
             dbId: data.dbId || data._id,
           }),
         );
-        // dispatch(
-        //   updateSidebarMessage({
-        //     chatId: String(data.chatId),
-        //     message: { status: data.status },
-        //   }),
-        // );
       });
 
-      // ... inside the socket useEffect
 
       socket.on("receive_message", (data) => {
         // Ensure we don't process our own messages as "received"
@@ -261,7 +266,7 @@ const Home = () => {
     dispatch(setActiveChat(id));
     // setShowChat(true);
     console.log("Clicked chat:", id);
-
+    await new Promise((resolve) => setTimeout(resolve, 100));
     // Check if we already have messages for this chat
     dispatch(
       markAsSeen({
