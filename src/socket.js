@@ -9,6 +9,7 @@ const SOCKET_URL = USE_LOCAL_SERVER
 
 // Create the socket instance
 const socket = io(SOCKET_URL, {
+  transports: ["polling", "websocket"],
   autoConnect: false,
   withCredentials: true,
 });
