@@ -9,9 +9,19 @@ const SOCKET_URL = USE_LOCAL_SERVER
 
 // Create the socket instance
 const socket = io(SOCKET_URL, {
+  timeout: 5000, // 5 सेकंड के बाद पक्का एरर दे
+  reconnectionAttempts: 3, // 3 बार के बाद हार मान ले
   transports: ["polling", "websocket"],
   autoConnect: false,
   withCredentials: true,
+});
+
+socket.io.on("error", (error) => {
+  console.log("Socket Global Error:", error);
+});
+
+socket.on("connect_error", (err) => {
+  console.log("Connection Failed:", err.message);
 });
 
 export default socket;
