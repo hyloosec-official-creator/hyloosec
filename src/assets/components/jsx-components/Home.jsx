@@ -1,7 +1,7 @@
 import ChatWindow from "./Home/ChatWindow";
 import SideBar from "./Home/SideBar";
 import "../../css/Home.css";
-import { useEffect, useState , useRef} from "react";
+import { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import socket from "../../../socket";
 import axios from "axios";
@@ -145,116 +145,129 @@ useEffect(() => {
     if (currentUser?.userId) initializeSidebar();
   }, [currentUser?.userId, dispatch]);
 
-// Home.jsx के टॉप पर ये जोड़ें
-const activeChatIdRef = useRef(activeChatId);
+  useEffect(() => {
+    if (currentUser?.userId) {
+      socket.connect();
+      socket.emit("join", currentUser.userId);
 
-// activeChatId अपडेट होते ही ref अपडेट करें
-useEffect(() => {
-  activeChatIdRef.current = activeChatId;
-}, [activeChatId]);
+      socket.on("message_status_sync", (data) => {
+        console.log("Status Sync Received:", data);
+        dispatch(
+          bulkUpdateMessageStatus({
+            chatId: data.chatId,
+            status: data.status,
+          }),
+        );
+        dispatch(
+          updateSidebarMessage({
+            chatId: data.chatId,
+            message: { status: data.status }, // This helps the sidebar tick update
+            currentUserId: currentUser.userId,
+          }),
+        );
+      });
 
-// फुल ऑप्टिमाइज़्ड useEffect
-useEffect(() => {
-  if (!currentUser?.userId) return;
+      socket.on("user_status_changed", (data) => {
+        dispatch(
+          updateUserStatus({
+            userId: data.userId,
+            online: data.online,
+            lastSeen: data.lastSeen,
+          }),
+        );
+      });
 
-  // 1. सॉकेट कनेक्ट करें (सिर्फ एक बार)
-  if (!socket.connected) {
-    socket.connect();
-    socket.emit("join", currentUser.userId);
-  }
+      socket.on("get_online_users", (onlineIds) => {
+        onlineIds.forEach((id) => {
+          dispatch(updateUserStatus({ userId: id, online: true }));
+        });
+      });
 
-  // 2. इवेंट लिसनर्स (Clean logic)
-  const onStatusSync = (data) => {
-    dispatch(bulkUpdateMessageStatus({ chatId: data.chatId, status: data.status }));
-    dispatch(updateSidebarMessage({ 
-        chatId: data.chatId, 
-        message: { status: data.status }, 
-        currentUserId: currentUser.userId 
-    }));
-  };
+      socket.on("message_status_updated", (data) => {
+        console.log("Real-time Status Update Received:", data);
+        dispatch(
+          updateMessageStatus({
+            chatId: String(data.chatId),
+            messageId: String(data.messageId),
+            status: data.status,
+            dbId: data.dbId || data._id,
+          }),
+        );
+      });
 
-  const onUserStatusChange = (data) => {
-    dispatch(updateUserStatus({ userId: data.userId, online: data.online, lastSeen: data.lastSeen }));
-  };
 
-  const onGetOnlineUsers = (onlineIds) => {
-    onlineIds.forEach((id) => dispatch(updateUserStatus({ userId: id, online: true })));
-  };
+      socket.on("receive_message", (data) => {
+        // Ensure we don't process our own messages as "received"
+        if (String(data.senderId) !== String(currentUser.userId)) {
+          dispatch(
+            updateSidebarMessage({
+              chatId: String(data.senderId), // The key is the person WHO SENT it
+              message: { ...data },
+              currentUserId: currentUser.userId,
+            }),
+          );
 
-  const onStatusUpdated = (data) => {
-    dispatch(updateMessageStatus({
-      chatId: String(data.chatId),
-      messageId: String(data.messageId),
-      status: data.status,
-      dbId: data.dbId || data._id,
-    }));
-  };
+          // Tell server message delivered
+          socket.emit("message_delivered", {
+            chatId: data.senderId,
+            messageId: data._id,
+            senderId: data.senderId,
+          });
 
-  const onReceiveMessage = (data) => {
-    if (String(data.senderId) !== String(currentUser.userId)) {
-      dispatch(updateSidebarMessage({ 
-          chatId: String(data.senderId), 
-          message: { ...data }, 
-          currentUserId: currentUser.userId 
-      }));
+          // Auto-seen if this chat window is currently open
+          if (String(activeChatId) === String(data.senderId)) {
+            socket.emit("message_seen", {
+              chatId: data.senderId,
+              messageId: data._id,
+              senderId: data.senderId,
+            });
+          }
+        }
+      });
+      // TYPING LISTENERS
+      socket.on("typing_status", ({ chatId, typing }) => {
+        if (String(chatId) === String(activeChatId)) {
+          setIsTyping(typing);
+        }
+      });
 
-      socket.emit("message_delivered", { chatId: data.senderId, messageId: data._id, senderId: data.senderId });
+      socket.on("message_unsent", (data) => {
+        dispatch(
+          deleteMessage({ chatId: data.senderId, messageId: data.messageId }),
+        );
+      });
 
-      // रिफ का उपयोग करें (Ref से लेटेस्ट activeChatId मिलेगा)
-      if (String(activeChatIdRef.current) === String(data.senderId)) {
-        socket.emit("message_seen", { chatId: data.senderId, messageId: data._id, senderId: data.senderId });
-      }
+      return () => {
+        socket.off("user_status_changed");
+        socket.off("receive_message");
+        socket.off("typing_status");
+        socket.off("message_unsent");
+        socket.off("message_status_updated");
+        socket.off("message_status_sync"); // ✅ added
+        socket.off("get_online_users");
+        socket.disconnect();
+      };
     }
-  };
-
-  const onTypingStatus = ({ chatId, typing }) => {
-    // यहाँ भी रिफ का उपयोग
-    if (String(chatId) === String(activeChatIdRef.current)) {
-      setIsTyping(typing);
-    }
-  };
-
-  const onMessageUnsent = (data) => {
-    dispatch(deleteMessage({ chatId: data.senderId, messageId: data.messageId }));
-  };
-
-  // लिसनर्स अटैच करें
-  socket.on("message_status_sync", onStatusSync);
-  socket.on("user_status_changed", onUserStatusChange);
-  socket.on("get_online_users", onGetOnlineUsers);
-  socket.on("message_status_updated", onStatusUpdated);
-  socket.on("receive_message", onReceiveMessage);
-  socket.on("typing_status", onTypingStatus);
-  socket.on("message_unsent", onMessageUnsent);
-
-  // 3. CLEANUP (disconnect नहीं करना है!)
-  return () => {
-    socket.off("message_status_sync", onStatusSync);
-    socket.off("user_status_changed", onUserStatusChange);
-    socket.off("get_online_users", onGetOnlineUsers);
-    socket.off("message_status_updated", onStatusUpdated);
-    socket.off("receive_message", onReceiveMessage);
-    socket.off("typing_status", onTypingStatus);
-    socket.off("message_unsent", onMessageUnsent);
-  };
-}, [currentUser?.userId, dispatch]); // activeChatId को dependencies से निकाल दिया
+  }, [currentUser?.userId, activeChatId, dispatch]);
 
   useEffect(() => {
     if (!currentUser?.userId) return;
 
+    // This ensures that even if a socket event was missed during
+    // a page load or tab switch, the UI "repaints" the online status regularly.
     const syncInterval = setInterval(() => {
       socket.emit("request_online_users");
-    }, 5000); 
+    }, 3000); // I suggest 3 seconds for a snappier feel than 30
 
     return () => clearInterval(syncInterval);
   }, [currentUser?.userId]);
 
   const handleSelectChat = async (id) => {
     dispatch(setActiveChat(id));
-
+    // setShowChat(true);
     console.log("Clicked chat:", id);
     await new Promise((resolve) => setTimeout(resolve, 100));
-
+    // Check if we already have messages for this chat
     dispatch(
       markAsSeen({
         chatId: id,
