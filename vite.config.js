@@ -1,16 +1,17 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 
-// // https://vite.dev/config/
-// export default defineConfig({
-//   plugins: [react()],
-//   build: {
-//     minify: 'terser',
-//     terserOptions: {
-//       compress: {
-//         drop_console: true, // ये सारे console.log हटा देगा
-//         drop_debugger: true,
-//       },
-//     },
-//   },
-// })
+export default defineConfig({
+  plugins: [react()],
+  // 'build' वाला हिस्सा हटा दो या कमेंट कर दो ताकि console.log न हटें
+  /* build: {
+    minify: 'terser',
+    terserOptions: {
+      compress: {
+        drop_console: true, 
+        drop_debugger: true,
+      },
+    },
+  },
+  */
+})
