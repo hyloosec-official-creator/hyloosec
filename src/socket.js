@@ -1,11 +1,19 @@
 import { io } from "socket.io-client";
 
 // वही लॉजिक जो तुम्हारे API फाइल में है
-const socket = io("https://node.hyloosec.online", {
-  path: "/socket.io/",        // यह डिफ़ॉल्ट होता है, इसे रखें
-  transports: ["websocket"],  // प्रोडक्शन पर सीधा websocket ही बेस्ट है
+const USE_LOCAL_SERVER = false; 
+
+const SOCKET_URL = USE_LOCAL_SERVER 
+  ? "http://localhost:5000" 
+  : import.meta.env.VITE_MONGO_API_URL; // यहाँ अपनी प्रोडक्शन वाली URL डालें
+
+// Create the socket instance
+const socket = io(SOCKET_URL, {
+  timeout: 5000, // 5 सेकंड के बाद पक्का एरर दे
+  reconnectionAttempts: 3, // 3 बार के बाद हार मान ले
+  transports: ["polling", "websocket"],
+  autoConnect: false,
   withCredentials: true,
-  autoConnect: false
 });
 
 socket.io.on("error", (error) => {
