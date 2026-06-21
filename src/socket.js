@@ -10,6 +10,7 @@ const SOCKET_URL = USE_LOCAL_SERVER
 const socket = io(SOCKET_URL, {
   path: "/socket.io/",
   transports: ["websocket"],
+  secure: true,
   timeout: 5000, 
   reconnectionAttempts: 3, 
   autoConnect: false, 
