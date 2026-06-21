@@ -1,6 +1,6 @@
 import { io } from "socket.io-client";
 
-const USE_LOCAL_SERVER = true; 
+const USE_LOCAL_SERVER = false; 
 
 const SOCKET_URL = USE_LOCAL_SERVER 
   ? "http://localhost:5000" 
