@@ -1,20 +1,9 @@
 import { io } from "socket.io-client";
 
-const USE_LOCAL_SERVER = false; 
-
-const SOCKET_URL = USE_LOCAL_SERVER 
-  ? "http://localhost:5000" 
-  : import.meta.env.VITE_MONGO_API_URL; 
-
-  
-const socket = io(SOCKET_URL, {
-  path: "/socket.io/",
+const socket = io("https://node.hyloosec.online", {
+  path: "/socket.io/", // सर्वर के Server(server, { path: "/socket.io/" }) से मैच होना चाहिए
   transports: ["websocket"],
-  secure: true,
-  timeout: 5000, 
-  reconnectionAttempts: 3, 
-  autoConnect: false, 
-  withCredentials: true,
+  secure: true
 });
 
 socket.on("connect", () => console.log("🚀 Socket Connected ID:", socket.id));
