@@ -334,3 +334,35 @@ export const decryptFileName = async (encryptedNameBase64, aesKey) => {
   );
   return new TextDecoder().decode(decrypted);
 };
+
+export const generateSignature = async (
+  encryptedText,
+  timestamp,
+  senderId,
+  secretKey,
+) => {
+  const encoder = new TextEncoder();
+  const baseKey = await window.crypto.subtle.importKey(
+    "raw",
+    encoder.encode(secretKey),
+    { name: "HMAC", hash: "SHA-256" },
+    false,
+    ["sign"],
+  );
+
+  const part1 = secretKey.substring(0, Math.floor(secretKey.length / 2));
+  const part2 = secretKey.substring(Math.floor(secretKey.length / 2));
+
+  const dataToSign = encoder.encode(
+    `${part1}${encryptedText}${timestamp}${senderId}${part2}`,
+  );
+
+  const signature = await window.crypto.subtle.sign(
+    "HMAC",
+    baseKey,
+    dataToSign,
+  );
+  // cryptoUtils.js या जहां तुम generateSignature कॉल कर रहे हो
+  console.log("CLIENT_DATA_TO_SIGN:",signature);
+  return uint8ArrayToBase64(new Uint8Array(signature));
+};

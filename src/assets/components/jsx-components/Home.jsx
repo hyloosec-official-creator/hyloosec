@@ -12,6 +12,7 @@ import {
   encryptText,
   encryptFileName,
   uint8ArrayToBase64,
+  generateSignature,
 } from "../../../utils/cryptoUtils";
 import { setBulkProfiles } from "../../../store/slices/userInfoSlice";
 import { setChatFile, removeChatFile } from "../../../store/slices/fileSlice";
@@ -51,7 +52,9 @@ const Home = ({ activeTab }) => {
   const [showChat, setShowChat] = useState(false);
   const [uploadProgress, setUploadProgress] = useState({}); // Stores progress per ChatId
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 800);
-  const [isInitialLoading, setIsInitialLoading] = useState(true); // Start as true
+  const [isInitialLoading, setIsInitialLoading] = useState(true);
+  const [sessionSecret, setSessionSecret] = useState(null);
+
   useEffect(() => {
     const handleResize = () => {
       setIsMobile(window.innerWidth <= 800);
@@ -68,17 +71,21 @@ const Home = ({ activeTab }) => {
     : EMPTY_ARRAY;
 
   // 1. INITIAL LOAD
-useEffect(() => {
-  if (activeChatId && chats.length > 0) {
-    const targetChat = chats.find((c) => String(c.id) === String(activeChatId));
-    
+  useEffect(() => {
+    if (activeChatId && chats.length > 0) {
+      const targetChat = chats.find(
+        (c) => String(c.id) === String(activeChatId),
+      );
 
-    if (targetChat && (!targetChat.messages || targetChat.messages.length === 0)) {
-      console.log("Auto-restoring active chat...");
-      handleSelectChat(activeChatId);
+      if (
+        targetChat &&
+        (!targetChat.messages || targetChat.messages.length === 0)
+      ) {
+        console.log("Auto-restoring active chat...");
+        handleSelectChat(activeChatId);
+      }
     }
-  }
-}, [activeChatId, chats]);
+  }, [activeChatId, chats]);
 
   useEffect(() => {
     const initializeSidebar = async () => {
@@ -123,9 +130,9 @@ useEffect(() => {
               lastMsg: mongoConv?.lastMessage || "No messages yet",
               lastMsgTime: mongoConv?.updatedAt || new Date().toISOString(),
               lastMsgObj: mongoConv?.lastMsgObj || null,
-              lastMessageStatus: mongoConv?.lastMessageStatus || "sent", // PERSIST BLUE TICK
+              lastMessageStatus: mongoConv?.lastMessageStatus || "sent",
               lastMessageSenderId: mongoConv?.lastMessageSenderId,
-              lastSeen: mongoConv?.lastSeen || null, // PERSIST LAST SEEN
+              lastSeen: mongoConv?.lastSeen || null,
               online: mongoConv?.online || false,
               unreadCount: mongoConv?.unreadCount || 0,
               messages: [],
@@ -147,8 +154,33 @@ useEffect(() => {
 
   useEffect(() => {
     if (currentUser?.userId) {
+      socket.auth = { userId: currentUser.userId };
+      console.log("ye hai user id",socket.auth);
       socket.connect();
       socket.emit("join", currentUser.userId);
+
+      socket.on("auth_handshake", (data) => {
+        console.log("🔒 Security Handshake Successful: Key Received");
+        setSessionSecret(data.secretKey);
+      });
+
+      // useEffect के अंदर ये नया लिसनर जोड़ो
+      socket.on("message_status_updated", (data) => {
+        // अगर सर्वर ने मैसेज सेव कर लिया है, तो tempId को असली DB ID से बदलें
+        if (data.newId) {
+          dispatch(
+            updateMessageStatus({
+              chatId: data.chatId,
+              messageId: data.messageId, // tempId
+              newId: data.newId, // DB ID
+              status: data.status,
+            }),
+          );
+        } else {
+          // सिर्फ स्टेटस अपडेट (delivered/seen)
+          dispatch(updateMessageStatus(data));
+        }
+      });
 
       socket.on("message_status_sync", (data) => {
         console.log("Status Sync Received:", data);
@@ -194,7 +226,6 @@ useEffect(() => {
           }),
         );
       });
-
 
       socket.on("receive_message", (data) => {
         // Ensure we don't process our own messages as "received"
@@ -333,8 +364,8 @@ useEffect(() => {
   const handleNewMessage = async (chatId, newMessage) => {
     if (!currentUser?.userId) return;
     const tempId = `temp_${Date.now()}`;
+    const timestamp = Date.now();
 
-    // 1. Sidebar ko "sending" status dikhao
     dispatch(
       updateSidebarMessage({
         chatId,
@@ -349,16 +380,10 @@ useEffect(() => {
 
       if (filesToUpload && filesToUpload.length > 0) {
         for (let f of filesToUpload) {
-          // A. AES Key generate करें
           const aesKey = await generateAESKey();
-
-          // B. फाइल नेम एन्क्रिप्ट करें
           const encName = await encryptFileName(f.name, aesKey);
-
-          // C. Chunked Encryption का उपयोग करें
           const finalBlob = await encryptFileInChunks(f.rawFile, aesKey);
 
-          // D. RSA Key Wrapping (AES Key को रिसीवर की पब्लिक की से लॉक करें)
           const targetChat = chats.find((c) => String(c.id) === String(chatId));
           const exportedKey = await window.crypto.subtle.exportKey(
             "raw",
@@ -375,51 +400,54 @@ useEffect(() => {
             currentUser.publicKey || currentUser.user.publicKey,
           );
 
-          // E. Spring Boot Upload
           const formData = new FormData();
-          // अब सर्वर पर एन्क्रिप्टेड नाम के साथ फाइल जाएगी
           formData.append("files", finalBlob, encName + ".enc");
-
           const mediaRes = await JavaAPI.post("/media/upload", formData);
 
-          // F. Metadata pack करें (IV की अब जरूरत नहीं क्योंकि IV फाइल के चंक्स के अंदर है!)
           processedFiles.push({
-            name: encName, // एन्क्रिप्टेड नाम
+            name: encName,
             url: mediaRes.data[0].url,
             type: f.type,
             size: f.size,
             encAesKeyForReceiver,
             encAesKeyForSender,
-            originalExtension: f.name.split('.').pop(),
+            originalExtension: f.name.split(".").pop(),
           });
         }
       }
 
-      // 2. Final Payload to Node.js
-      const response = await MongoAPI.post("/messages/send", {
+      if (!sessionSecret) {
+        console.log("🔒 Security Key not initialized yet!");
+        console.error("🔒 Security Key not initialized yet!");
+        return;
+    }
+
+      // 2. सिग्नेचर जनरेट करो
+      const signature = await generateSignature(
+        newMessage.textForReceiver,
+        timestamp,
+        currentUser.userId,
+        sessionSecret,
+      );
+
+      // 3. सॉकेट पेलोड तैयार करो
+      const messagePayload = {
         senderId: String(currentUser.userId),
         receiverId: String(chatId),
         textForReceiver: newMessage.textForReceiver,
         textForSender: newMessage.textForSender,
         files: processedFiles,
         messageId: tempId,
-      });
+        timestamp: timestamp,
+        signature: signature,
+      };
 
-      if (response.data) {
-        dispatch(
-          updateMessageStatus({
-            chatId,
-            messageId: tempId,
-            newId: response.data._id,
-            status: response.data.status,
-          }),
-        );
-        socket.emit("send_message", {
-          ...response.data,
-          receiverId: String(chatId),
-        });
-        dispatch(removeChatFile({ chatId }));
-      }
+      // 4. API की जगह सिर्फ सॉकेट का इस्तेमाल करो
+      socket.emit("send_message", messagePayload);
+      console.log("🚀 Message sent via socket:", messagePayload);
+
+      // 5. फाइल क्लीनअप
+      dispatch(removeChatFile({ chatId }));
       setUploadProgress((prev) => ({ ...prev, [chatId]: 0 }));
     } catch (error) {
       console.error("Critical Error:", error);

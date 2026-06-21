@@ -71,7 +71,7 @@ const SecurityModal = ({ userData, onSuccess, onClose }) => {
           <div className="icon-circle">
             <ShieldCheck size={30} className="shield-icon" />
           </div>
-          <h3>Security Layer</h3>
+          <h3 className="Security-layer">Security Layer</h3>
           <p>Verify your identity to access end-to-end encrypted chats.</p>
         </div>
 
