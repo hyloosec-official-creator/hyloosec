@@ -30,11 +30,22 @@ const setupAuthInterceptors = (instance) => {
     async (error) => {
       const { response } = error;
 
-      // 401 एरर पर ऑथेंटिकेशन हैंडलिंग
-      if (response && response.status === 401) {
-        store.dispatch(logout());
-        localStorage.clear();
-        window.location.reload();
+      if (response) {
+        // यहाँ हम 403 को अलग से चेक कर रहे हैं
+        if (response.status === 403) {
+          console.error("🚨 403 Forbidden Error detected!");
+          console.error("Server Message:", response.data); // सर्वर का असली कारण यहाँ दिखेगा
+          
+          // तुम यहाँ अलग लॉजिक लिख सकते हो, जैसे- सिर्फ एक अलर्ट या यूजर को नोटिफाई करना
+          // लेकिन लॉगआउट मत करो, पहले चेक करो कि सर्वर क्या कह रहा है
+        }
+
+        // 401 पर अभी भी लॉगआउट होगा
+        if (response.status === 401) {
+          store.dispatch(logout());
+          localStorage.clear();
+          window.location.reload();
+        }
       }
       return Promise.reject(error);
     }
