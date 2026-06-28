@@ -55,7 +55,8 @@ const SearchBar = ({ onClose }) => {
       // 3. रेडक्स स्टेट सिंक (Redux Update)
       dispatch(openOrAddChat({
         ...foundUser,
-        id: foundUser.userId, 
+        id: foundUser.userId,
+        publicKey: foundUser.publicKey, 
         messages: history 
       }));
 
