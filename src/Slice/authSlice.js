@@ -29,6 +29,7 @@ const initialState = {
   isVerified: false,
   error: "",
   success: "",
+  isSessionExpired: false,
 };
 
 const authSlice = createSlice({
@@ -84,9 +85,13 @@ const authSlice = createSlice({
       state.error = "";
       state.success = "";
     },
+    setSessionExpired: (state, action) => {
+      state.isSessionExpired = action.payload;
+    },
     logout: (state) => {
       state.user = null;
       state.token = null; // ✅ 4. Clear token in state
+      state.isSessionExpired = false;
       localStorage.removeItem("user");
       localStorage.removeItem("token"); // ✅ 5. Remove from localStorage
       state.view = "login";
@@ -102,6 +107,7 @@ export const {
   setVerificationStatus,
   loginUser,
   clearMessages,
+  setSessionExpired,
   logout,
 } = authSlice.actions;
 

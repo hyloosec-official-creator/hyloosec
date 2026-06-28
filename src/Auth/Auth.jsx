@@ -9,7 +9,7 @@ import SuccessInfo from "./components/SuccessInfo";
 import "./Auth.css";
 
 const Auth = () => {
-  const { view } = useSelector((state) => state.auth);
+  const { view, isSessionExpired } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
 
   const cardClass =
@@ -29,6 +29,20 @@ const Auth = () => {
 
   return (
     <div className={view === "about" ? "about-full-page" : "auth-full-page"}>
+      {isSessionExpired && (
+      <div className="session-popup-overlay">
+        <div className="session-popup">
+          <h3>सुरक्षा अलर्ट 🔒</h3>
+          <p>आपका सत्र (Session) समाप्त हो गया है। कृपया पुनः लॉगिन करें।</p>
+          <button onClick={() => {
+            // dispatch(setSessionExpired(false));
+            // dispatch(setView("login"));
+            // localStorage.clear();
+            console.log("Testing popup UI...");
+          }}>लॉग इन करें</button>
+        </div>
+      </div>
+    )}
       {/* यहाँ केवल cardClass का उपयोग करें */}
       <div className={cardClass}>
         <div className="form-wrapper">
