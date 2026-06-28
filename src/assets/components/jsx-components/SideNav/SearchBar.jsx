@@ -24,7 +24,7 @@ const SearchBar = ({ onClose }) => {
     try {
       // ☕ जावा बैकएंड: अब यह कुकीज़ लेकर सीधे स्प्रिंग बूट के पास जाएगा
       const res = await JavaAPI.get(`/user/${searchId}`);
-      
+      console.log("Full Response from Java API:", res.data);
       // Axios में रिस्पॉन्स का डेटा सीधे .data में मिलता है
       setFoundUser(res.data);
     } catch (err) {

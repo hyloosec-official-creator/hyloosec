@@ -80,6 +80,28 @@ body {
   justify-content: center;
 }
 
+.session-popup-overlay {
+  position: fixed !important;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.9) !important; /* पक्का करो कि बैकग्राउंड दिख रहा है */
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+  z-index: 9999999 !important;
+}
+
+.session-popup {
+  background: #1a1a1a;
+  padding: 2rem;
+  border-radius: 12px;
+  text-align: center;
+  color: white;
+  border: 1px solid #333;
+}
+
 .app-container {
   width: 95vw;
   max-width: 1200px;

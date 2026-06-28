@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+import { setSessionExpired } from "./Slice/authSlice.js";
 import "./App.css";
 import Loader from "./assets/components/jsx-components/Loader.jsx";
 import Home from "./assets/components/jsx-components/Home.jsx";
@@ -8,7 +9,8 @@ import Settings from "./assets/components/jsx-components/Settings.jsx";
 import Auth from "./Auth/Auth.jsx";
 
 const App = () => {
-  const { user } = useSelector((state) => state.auth);
+  const { user, isSessionExpired } = useSelector((state) => state.auth);
+  const dispatch = useDispatch();
   const { activeChatId } = useSelector(
     (state) => state.chat || { activeChatId: null },
   );
@@ -63,6 +65,21 @@ const App = () => {
 
   return (
     <div className="App">
+
+      {isSessionExpired && (
+        <div className="session-popup-overlay">
+          <div className="session-popup">
+            <h3>सुरक्षा अलर्ट 🔒</h3>
+            <p>आपका सत्र (Session) समाप्त हो गया है। कृपया पुनः लॉगिन करें।</p>
+            <button onClick={() => {
+              dispatch(setSessionExpired(false));
+              localStorage.clear();
+              window.location.reload(); // यह सबसे बेस्ट तरीका है रिफ्रेश करने का
+            }}>लॉग इन करें</button>
+          </div>
+        </div>
+      )}
+
       {isLoading ? (
         <Loader finishLoading={() => setIsLoading(false)} />
       ) : (

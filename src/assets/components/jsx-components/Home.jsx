@@ -3,6 +3,7 @@ import SideBar from "./Home/SideBar";
 import "../../css/Home.css";
 import { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
+import { setSessionExpired } from "../../../Slice/authSlice";
 import socket from "../../../socket";
 import axios from "axios";
 import { MongoAPI, JavaAPI } from "../../../api/api";
@@ -94,7 +95,7 @@ const Home = ({ activeTab }) => {
       setIsInitialLoading(true);
       console.log("Home Component Mounted. User ID:", currentUser?.userId);
       if (!currentUser?.userId) {
-        console.warn("No user ID found, skipping sidebar init.");
+        console.warn("Skipping socket connection: User ID missing");
         return;
       }
       try {
@@ -145,6 +146,10 @@ const Home = ({ activeTab }) => {
         }
       } catch (err) {
         console.error("Initialization failed:", err);
+        if (err.response?.status === 403 || err.response?.status === 401) {
+          dispatch(setSessionExpired(true)); // पॉपअप ट्रिगर हो गया!
+
+        }
       } finally {
         setIsInitialLoading(false); // Stop loading regardless of success/fail
       }
@@ -155,7 +160,7 @@ const Home = ({ activeTab }) => {
   useEffect(() => {
     if (currentUser?.userId) {
       socket.auth = { userId: currentUser.userId };
-      console.log("ye hai user id",socket.auth);
+      console.log("ye hai user id", socket.auth);
       socket.connect();
       socket.emit("join", currentUser.userId);
 
@@ -420,7 +425,7 @@ const Home = ({ activeTab }) => {
         console.log("🔒 Security Key not initialized yet!");
         console.error("🔒 Security Key not initialized yet!");
         return;
-    }
+      }
 
       // 2. सिग्नेचर जनरेट करो
       const signature = await generateSignature(
