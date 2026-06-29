@@ -85,6 +85,23 @@ const SideBar = ({
   const currentUser = useSelector((state) => state.auth.user);
   const myPrivateKey = currentUser?.privateKey || currentUser?.user?.privateKey;
 
+  const processedChats = useMemo(() => {
+    return chats.map((chat) => {
+      const lastMsgObj =
+        chat.messages?.length > 0
+          ? chat.messages[chat.messages.length - 1]
+          : null;
+
+      return {
+        ...chat,
+        effectiveLastMsg: chat.lastMsgObj || lastMsgObj,
+        isSentByMe: lastMsgObj
+          ? String(lastMsgObj.senderId) === String(currentUser?.userId)
+          : false,
+      };
+    });
+  }, [chats, currentUser?.userId]);
+
   const SidebarSkeleton = () => (
     <div className="sidebar-skeleton-list">
       {[1, 2, 3, 4, 5, 6].map((i) => (
@@ -221,31 +238,15 @@ const SideBar = ({
       <div className="chat-list">
         {isLoading ? (
           <SidebarSkeleton />
-        ) : chats.length > 0 ? (
-          chats.map((chat) => {
+        ) : processedChats.length > 0 ? (
+          processedChats.map((chat) => {
             const imageSrc = chat.avatar || chat.profilePic || "";
-            const lastMsgObj =
-              chat.messages && chat.messages.length > 0
-                ? chat.messages[chat.messages.length - 1]
-                : null;
-
-            const effectiveLastMsg =
-              chat.lastMsgObj ||
-              (chat.messages && chat.messages.length > 0
-                ? chat.messages[chat.messages.length - 1]
-                : null);
-
             const displayStatus = chat.lastMessageStatus;
-            const isSentByMe = lastMsgObj
-              ? String(lastMsgObj.senderId) === String(currentUser?.userId)
-              : chat.lastMessageSenderId === String(currentUser?.userId);
-
-            const isActuallyUnread = (chat.unreadCount || 0) > 0;
 
             return (
               <div
                 key={chat.id}
-                className={`chat-item ${chat.id === activeChatId ? "active" : ""} ${isActuallyUnread ? "unread-chat" : ""}`}
+                className={`chat-item ${chat.id === activeChatId ? "active" : ""} ${chat.isActuallyUnread ? "unread-chat" : ""}`}
                 onClick={() => onChatSelect(chat.id)}
               >
                 <div className="sidebar-avatar-wrapper">
@@ -267,13 +268,17 @@ const SideBar = ({
 
                 <div className="chat-info">
                   <div className="chat-info-header">
-                    <h4 className={isActuallyUnread ? "unread-name-bold" : ""}>
+                    <h4
+                      className={
+                        chat.isActuallyUnread ? "unread-name-bold" : ""
+                      }
+                    >
                       {chat.name || chat.username || `User ${chat.id}`}
                     </h4>
 
                     {chat.online ? (
                       <span className="online-indicator-text">online</span>
-                    ) : chat.lastSeen ? ( // Use a clean ternary here
+                    ) : chat.lastSeen ? (
                       <span className="last-seen-sidebar-text">
                         {formatLastSeen(chat.lastSeen)}
                       </span>
@@ -281,41 +286,44 @@ const SideBar = ({
                   </div>
 
                   <p
-                    className={`sidebar-last-msg ${isActuallyUnread ? "unread-msg-bold" : ""}`}
+                    className={`sidebar-last-msg ${chat.isActuallyUnread ? "unread-msg-bold" : ""}`}
                   >
-                    {isSentByMe && (
+                    {chat.isSentByMe && (
                       <span className="sidebar-tick">
                         {displayStatus === "seen" ? (
                           <PiSealCheckFill
                             size={16}
-                            style={{ color: "#0051ff", marginRight: "4px" }} // Blue Tick
+                            style={{ color: "#0051ff", marginRight: "4px" }}
                           />
                         ) : displayStatus === "delivered" ? (
                           <PiSealCheckFill
                             size={16}
-                            style={{ color: "#ffffff", marginRight: "4px" }} // White filled (Delivered)
+                            style={{ color: "#ffffff", marginRight: "4px" }}
                           />
                         ) : (
                           <PiSealCheckLight
                             size={16}
-                            style={{ color: "#ffffff", marginRight: "4px" }} // Hollow (Sent/Sending)
+                            style={{ color: "#ffffff", marginRight: "4px" }}
                           />
                         )}
                       </span>
                     )}
+
                     <SidebarMsgPreview
-                      chat={{ ...chat, lastMsgObj: effectiveLastMsg }} // This ensures data reaches the component
+                      chat={{ ...chat, lastMsgObj: chat.effectiveLastMsg }}
                       currentUserId={currentUser?.userId}
                       privateKey={myPrivateKey}
                     />
+
                     <span
-                      className={`last-msg-time ${isActuallyUnread ? "unread-time-green" : ""}`}
+                      className={`last-msg-time ${chat.isActuallyUnread ? "unread-time-green" : ""}`}
                     >
                       {formatSidebarTime(chat.lastMsgTime)}
                     </span>
                   </p>
                 </div>
-                {isActuallyUnread && (
+
+                {chat.isActuallyUnread && (
                   <span className="unread-badge-count">
                     {chat.unreadCount || 1}
                   </span>
