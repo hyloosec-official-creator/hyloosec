@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { useSelector } from "react-redux";
 import logo from "../../../images/logo/logo.png";
 import { CiSearch, CiUser, CiChat1 } from "react-icons/ci";
