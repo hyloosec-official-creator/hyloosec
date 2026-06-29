@@ -1,7 +1,7 @@
 import ChatWindow from "./Home/ChatWindow";
 import SideBar from "./Home/SideBar";
 import "../../css/Home.css";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef, useCallback } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { setSessionExpired } from "../../../Slice/authSlice";
 import socket from "../../../socket";
@@ -55,6 +55,7 @@ const Home = ({ activeTab }) => {
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 800);
   const [isInitialLoading, setIsInitialLoading] = useState(true);
   const [sessionSecret, setSessionSecret] = useState(null);
+  const isFetchingRef = useRef(false);
 
   useEffect(() => {
     const handleResize = () => {
@@ -73,7 +74,7 @@ const Home = ({ activeTab }) => {
 
   // 1. INITIAL LOAD
   useEffect(() => {
-    if (activeChatId && chats.length > 0) {
+    if (activeChatId && chats.length > 0 && !isFetchingRef.current) {
       const targetChat = chats.find(
         (c) => String(c.id) === String(activeChatId),
       );
@@ -83,7 +84,10 @@ const Home = ({ activeTab }) => {
         (!targetChat.messages || targetChat.messages.length === 0)
       ) {
         console.log("Auto-restoring active chat...");
-        handleSelectChat(activeChatId);
+        isFetchingRef.current = true;
+        handleSelectChat(activeChatId).finally(() => {
+          isFetchingRef.current = false;
+        });
       }
     }
   }, [activeChatId, chats]);
@@ -148,7 +152,6 @@ const Home = ({ activeTab }) => {
         console.error("Initialization failed:", err);
         if (err.response?.status === 403 || err.response?.status === 401) {
           dispatch(setSessionExpired(true)); // पॉपअप ट्रिगर हो गया!
-
         }
       } finally {
         setIsInitialLoading(false); // Stop loading regardless of success/fail
@@ -169,9 +172,7 @@ const Home = ({ activeTab }) => {
         setSessionSecret(data.secretKey);
       });
 
-      // useEffect के अंदर ये नया लिसनर जोड़ो
       socket.on("message_status_updated", (data) => {
-        // अगर सर्वर ने मैसेज सेव कर लिया है, तो tempId को असली DB ID से बदलें
         if (data.newId) {
           dispatch(
             updateMessageStatus({
@@ -182,7 +183,6 @@ const Home = ({ activeTab }) => {
             }),
           );
         } else {
-          // सिर्फ स्टेटस अपडेट (delivered/seen)
           dispatch(updateMessageStatus(data));
         }
       });
@@ -288,62 +288,56 @@ const Home = ({ activeTab }) => {
 
   useEffect(() => {
     if (!currentUser?.userId) return;
-
-    // This ensures that even if a socket event was missed during
-    // a page load or tab switch, the UI "repaints" the online status regularly.
     const syncInterval = setInterval(() => {
       socket.emit("request_online_users");
-    }, 3000); // I suggest 3 seconds for a snappier feel than 30
+    }, 3000);
 
     return () => clearInterval(syncInterval);
   }, [currentUser?.userId]);
 
-  const handleSelectChat = async (id) => {
-    dispatch(setActiveChat(id));
-    // setShowChat(true);
-    console.log("Clicked chat:", id);
-    await new Promise((resolve) => setTimeout(resolve, 100));
-    // Check if we already have messages for this chat
-    dispatch(
-      markAsSeen({
+  const handleSelectChat = useCallback(
+    async (id) => {
+      dispatch(setActiveChat(id));
+
+      socket.emit("mark_chat_as_seen", {
         chatId: id,
-        currentUserId: currentUser.userId,
-      }),
-    );
+        myId: currentUser.userId,
+      });
 
-    socket.emit("mark_chat_as_seen", {
-      chatId: id,
-      myId: currentUser.userId,
-    });
-    const targetChat = chats.find((c) => String(c.id) === String(id));
-    if (
-      targetChat &&
-      (!targetChat.messages || targetChat.messages.length === 0)
-    ) {
-      try {
-        const res = await MongoAPI.get(`/messages/${currentUser.userId}/${id}`);
+      const targetChat = chats.find((c) => String(c.id) === String(id));
 
-        // Ensure we pass BOTH the chatId and the messages
-        dispatch(setMessagesForChat({ chatId: id, messages: res.data }));
-
-        // ALSO: Update the sidebar's last message to match the last message from DB
-        if (res.data.length > 0) {
-          const lastMsg = res.data[res.data.length - 1];
-          dispatch(
-            updateSidebarMessage({
-              chatId: id,
-              message: lastMsg,
-              currentUserId: currentUser.userId,
-              isHistoryLoad: true, // Add a flag to prevent unread count logic
-            }),
+      if (
+        targetChat &&
+        (!targetChat.messages || targetChat.messages.length === 0)
+      ) {
+        try {
+          const res = await MongoAPI.get(
+            `/messages/${currentUser.userId}/${id}?limit=50&skip=0`,
           );
+
+          if (res.data) {
+            dispatch(setMessagesForChat({ chatId: id, messages: res.data }));
+
+            if (res.data.length > 0) {
+              const lastMsg = res.data[res.data.length - 1];
+              dispatch(
+                updateSidebarMessage({
+                  chatId: id,
+                  message: lastMsg,
+                  currentUserId: currentUser.userId,
+                  isHistoryLoad: true,
+                }),
+              );
+            }
+          }
+        } catch (err) {
+          console.error("Database fetch failed:", err);
         }
-      } catch (err) {
-        console.error("Database fetch failed:", err);
       }
-    }
-  };
-  // FIXED: Implementation of handleFileSelect
+    },
+    [chats, currentUser?.userId, dispatch],
+  ); 
+
   const handleFileSelect = (files) => {
     console.log("Files received in Home:", files); // <--- DEBUG HERE
     if (!activeChatId) return;
