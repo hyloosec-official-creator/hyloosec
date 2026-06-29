@@ -109,8 +109,10 @@
 .chat-item {
   display: flex;
   align-items: center;
-  padding: 12px 20px;
-  gap: 15px;
+  padding: 7px 20px;
+  width: 100%;      
+  overflow: hidden;
+  gap: 12px;
   cursor: pointer;
   border-left: 4px solid transparent;
 }
@@ -188,4 +190,10 @@
   font-size: 0.7rem;
   font-weight: 600;
   margin-top: 2px;
+}
+
+@media (max-width: 800px) {
+  .sidebar {
+    width: 100% !important;
+  }
 }

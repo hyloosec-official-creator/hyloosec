@@ -197,23 +197,6 @@
   padding-bottom: 40px;
 }
 
-.chat-item {
-  display: flex;
-  align-items: center;
-  padding: 15px 20px;
-  gap: 15px;
-  cursor: pointer;
-  transition: background 0.2s;
-  border-left: 4px solid transparent;
-}
-
-.chat-item:hover,
-.chat-item.active {
-  background-color: #f0f9f8 !important;
-  border-left: 4px solid var(--primary-green-light);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-}
-
 .chat-item img {
   width: 45px;
   height: 45px;
@@ -224,6 +207,7 @@
 .chat-info {
   flex: 1;
   min-width: 0; /* Crucial for text-overflow ellipsis */
+  overflow: hidden;
   display: flex;
   flex-direction: column;
 }
