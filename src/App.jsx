@@ -65,20 +65,34 @@ const App = () => {
 
   return (
     <div className="App">
-
       {isSessionExpired && (
-        <div className="session-popup-overlay">
-          <div className="session-popup">
-            <h3>सुरक्षा अलर्ट 🔒</h3>
-            <p>आपका सत्र (Session) समाप्त हो गया है। कृपया पुनः लॉगिन करें।</p>
-            <button onClick={() => {
-              dispatch(setSessionExpired(false));
-              localStorage.clear();
-              window.location.reload(); // यह सबसे बेस्ट तरीका है रिफ्रेश करने का
-            }}>लॉग इन करें</button>
-          </div>
-        </div>
-      )}
+  <div className="session-popup-overlay">
+    <div className="session-popup">
+      <div className="popup-icon-container">
+        <span className="lock-icon">🔒</span>
+      </div>
+
+      <h3>Security Alert</h3>
+
+      <div className="message-container">
+        <p>Your session has expired.</p>
+        <p className="sub-text">
+          For security reasons, we only provide a <strong>7-day login session</strong>.
+          Please log in again to continue enjoying secure conversations.
+        </p>
+      </div>
+      <button
+        onClick={() => {
+          dispatch(setSessionExpired(false));
+          localStorage.clear();
+          window.location.reload();
+        }}
+      >
+        Log In
+      </button>
+    </div>
+  </div>
+)}
 
       {isLoading ? (
         <Loader finishLoading={() => setIsLoading(false)} />
@@ -87,15 +101,29 @@ const App = () => {
           {!shouldHideNav && (
             <SideNav activeTab={activeTab} setActiveTab={setActiveTab} />
           )}
-          {activeTab === "chats" ? (
+
+          {/* CSS के ज़रिए हाइड/शो करें (Display Property) */}
+          <div
+            style={{
+              display: activeTab === "chats" ? "flex" : "none",
+              width: "100%",
+            }}
+          >
             <Home />
-          ) : (
+          </div>
+
+          <div
+            style={{
+              display: activeTab === "settings" ? "flex" : "none",
+              width: "100%",
+            }}
+          >
             <Settings
               isDarkMode={isDarkMode}
               setIsDarkMode={setIsDarkMode}
               setActiveTab={setActiveTab}
             />
-          )}
+          </div>
         </div>
       )}
     </div>

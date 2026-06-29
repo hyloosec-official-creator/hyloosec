@@ -102,6 +102,35 @@ body {
   border: 1px solid #333;
 }
 
+/* Login Button Styles - Purple Theme */
+.session-popup button {
+  /* यहाँ हमने तुम्हारी --primary-purple वाली वेरिएबल यूज़ की है */
+  background: var(--primary-purple); 
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  font-size: 16px;
+  font-weight: 600;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease; 
+  box-shadow: 0 4px 15px rgba(45, 38, 75, 0.4); /* पर्पल शेड वाली शैडो */
+  margin-top: 20px;
+  width: 100%;
+}
+
+.session-popup button:hover {
+  /* होवर पर थोड़ा लाइट पर्पल ताकि पता चले कि बटन क्लिकेबल है */
+  background: #3e3663; 
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(45, 38, 75, 0.6);
+}
+
+.session-popup button:active {
+  transform: translateY(0);
+}
+
+
 .app-container {
   width: 95vw;
   max-width: 1200px;
