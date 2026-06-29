@@ -92,73 +92,71 @@ const Home = ({ activeTab }) => {
     }
   }, [activeChatId, chats]);
 
-  useEffect(() => {
+useEffect(() => {
     const initializeSidebar = async () => {
-      console.log("--- DEBUG START ---");
-      console.log("JavaAPI Config:", JavaAPI.defaults);
-      setIsInitialLoading(true);
-      console.log("Home Component Mounted. User ID:", currentUser?.userId);
-      if (!currentUser?.userId) {
-        console.warn("Skipping socket connection: User ID missing");
-        return;
+      if (!currentUser?.userId) return;
+
+      // 1. CACHE: अगर डेटा लोकल स्टोरेज में है, तुरंत सेट करें (Instant UI)
+      const cachedChats = localStorage.getItem(`chats_${currentUser.userId}`);
+      if (cachedChats) {
+        dispatch(setChats(JSON.parse(cachedChats)));
+        setIsInitialLoading(false); // तुरंत लोडिंग बंद करें
       }
+
+      setIsInitialLoading(true);
+      
       try {
-        const mongoRes = await MongoAPI.get(
-          `/conversations/${currentUser.userId}`,
-        );
-        console.log("Mongo Conversations Data:", mongoRes.data);
+        const mongoRes = await MongoAPI.get(`/conversations/${currentUser.userId}`);
         const conversations = mongoRes.data;
 
-        if (!Array.isArray(conversations) || conversations.length === 0) {
-          console.log("No conversations found.");
-          return;
-        }
+        if (!Array.isArray(conversations) || conversations.length === 0) return;
 
-        if (conversations.length > 0) {
-          const contactIds = conversations.map((conv) =>
-            conv.participants.find((id) => id !== currentUser.userId),
+        const contactIds = conversations.map((conv) =>
+          conv.participants.find((id) => id !== currentUser.userId),
+        );
+
+        const javaRes = await JavaAPI.post("/user/bulk-profiles", contactIds);
+        dispatch(setBulkProfiles(javaRes.data));
+
+        const formattedChats = javaRes.data.map((user) => {
+          const mongoConv = conversations.find((c) =>
+            c.participants.includes(user.userId),
           );
+          return {
+            id: user.userId,
+            name: user.username,
+            avatar: user.profilePic,
+            bio: user.bio,
+            publicKey: user.publicKey,
+            lastMsg: mongoConv?.lastMessage || "No messages yet",
+            lastMsgTime: mongoConv?.updatedAt || new Date().toISOString(),
+            lastMsgObj: mongoConv?.lastMsgObj || null,
+            lastMessageStatus: mongoConv?.lastMessageStatus || "sent",
+            lastMessageSenderId: mongoConv?.lastMessageSenderId,
+            lastSeen: mongoConv?.lastSeen || null,
+            online: mongoConv?.online || false,
+            unreadCount: mongoConv?.unreadCount || 0,
+            messages: [],
+          };
+        });
 
-          const javaRes = await JavaAPI.post("/user/bulk-profiles", contactIds);
-          dispatch(setBulkProfiles(javaRes.data));
-
-          const formattedChats = javaRes.data.map((user) => {
-            const mongoConv = conversations.find((c) =>
-              c.participants.includes(user.userId),
-            );
-            return {
-              id: user.userId,
-              name: user.username,
-              avatar: user.profilePic,
-              bio: user.bio,
-              publicKey: user.publicKey,
-              lastMsg: mongoConv?.lastMessage || "No messages yet",
-              lastMsgTime: mongoConv?.updatedAt || new Date().toISOString(),
-              lastMsgObj: mongoConv?.lastMsgObj || null,
-              lastMessageStatus: mongoConv?.lastMessageStatus || "sent",
-              lastMessageSenderId: mongoConv?.lastMessageSenderId,
-              lastSeen: mongoConv?.lastSeen || null,
-              online: mongoConv?.online || false,
-              unreadCount: mongoConv?.unreadCount || 0,
-              messages: [],
-            };
-          });
-          dispatch(setChats(formattedChats));
-          socket.emit("request_online_users");
-        } else {
-          console.log("No conversations found for this user.");
-        }
+        // 2. SYNC: नया डेटा रेडक्स और लोकल स्टोरेज दोनों में सेव करें
+        dispatch(setChats(formattedChats));
+        localStorage.setItem(`chats_${currentUser.userId}`, JSON.stringify(formattedChats));
+        
+        socket.emit("request_online_users");
       } catch (err) {
         console.error("Initialization failed:", err);
         if (err.response?.status === 403 || err.response?.status === 401) {
-          dispatch(setSessionExpired(true)); // पॉपअप ट्रिगर हो गया!
+          dispatch(setSessionExpired(true));
         }
       } finally {
-        setIsInitialLoading(false); // Stop loading regardless of success/fail
+        setIsInitialLoading(false);
       }
     };
-    if (currentUser?.userId) initializeSidebar();
-  }, [currentUser?.userId, dispatch]);
+
+    initializeSidebar();
+  }, [currentUser?.userId, dispatch]); // सिर्फ इनके बदलने पर ही कॉल होगा
 
   useEffect(() => {
     if (currentUser?.userId) {
