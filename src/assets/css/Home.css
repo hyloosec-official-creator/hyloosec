@@ -2,7 +2,6 @@
 
 .home-container {
   display: flex;
-  width: 100vw;
   overflow: hidden;
   background-color: var(--bg-main);
 }
