@@ -15,19 +15,19 @@ const UserInfo = ({ activeChat, onClose }) => {
 
   if (!targetUserId || isMe) return;
 
-  const fetchBio = async () => {
-    try {
-      const response = await JavaAPI.get(
-        `/user/profile/${targetUserId}`
-      );
+  // const fetchBio = async () => {
+  //   try {
+  //     const response = await JavaAPI.get(
+  //       `/user/profile/${targetUserId}`
+  //     );
 
-      setOtherUserBio(response.data?.bio ?? null);
-    } catch (err) {
-      console.error("Failed to fetch user bio:", err);
-    }
-  };
+  //     setOtherUserBio(response.data?.bio ?? null);
+  //   } catch (err) {
+  //     console.error("Failed to fetch user bio:", err);
+  //   }
+  // };
 
-  fetchBio();
+  // fetchBio();
 }, [activeChat, isMe]);
 
 
