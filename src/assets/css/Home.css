@@ -3,13 +3,13 @@
 .home-container {
   display: flex;
   overflow: hidden;
-  width: 90vw;
+  width: 87vw;
   background-color: var(--bg-main);
 }
 
 .sidebar {
   width: 350px;
-  height: 90%;
+  height: 80%;
   border-right: 1px solid var(--border-light);
   display: flex;
   flex-direction: column;
