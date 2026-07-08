@@ -3,7 +3,7 @@
 .home-container {
   display: flex;
   overflow: hidden;
-  width: 87vw;
+  width: 100%;
   background-color: var(--bg-main);
 }
 
