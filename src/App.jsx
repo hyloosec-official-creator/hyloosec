@@ -44,15 +44,13 @@ const App = () => {
     localStorage.setItem("isDarkMode", JSON.stringify(isDarkMode));
   }, [isDarkMode]);
 
-  // 2. Move the loading/user effect UP
   useEffect(() => {
     if (user) {
-      // Turant false karne ki bajaye, ek minimum delay set karein
       const timer = setTimeout(() => {
         setIsLoading(false);
-      }, 2000); // 2000ms = 2 Seconds (Aap isko adjust kar sakte hain)
+      }, 2000);
 
-      return () => clearTimeout(timer); // Cleanup timer if component unmounts
+      return () => clearTimeout(timer);
     }
   }, []);
 
@@ -111,8 +109,6 @@ const App = () => {
           {!shouldHideNav && (
             <SideNav activeTab={activeTab} setActiveTab={setActiveTab} />
           )}
-
-          {/* CSS के ज़रिए हाइड/शो करें (Display Property) */}
           <div
             style={{
               display: activeTab === "chats" ? "flex" : "none",

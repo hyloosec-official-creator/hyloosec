@@ -2,7 +2,7 @@ import axios from "axios";
 import { store } from "../store/store";
 import { logout, setSessionExpired } from "../Slice/authSlice";
 
-const USE_LOCAL_SERVER = false;
+const USE_LOCAL_SERVER = true;
 
 const API_ENDPOINTS = {
   JAVA: USE_LOCAL_SERVER

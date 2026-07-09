@@ -1,6 +1,12 @@
 import { io } from "socket.io-client";
 
-const socket = io("https://node.hyloosec.online", {
+// const socket = io("https://node.hyloosec.online", {
+//   path: "/socket.io/", // सर्वर के Server(server, { path: "/socket.io/" }) से मैच होना चाहिए
+//   transports: ["websocket"],
+//   secure: true
+// });
+
+const socket = io("http://localhost:5000", {
   path: "/socket.io/", // सर्वर के Server(server, { path: "/socket.io/" }) से मैच होना चाहिए
   transports: ["websocket"],
   secure: true
