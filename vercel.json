@@ -11,5 +11,11 @@
       "destination": "https://www.hyloosec.online/:path*",
       "permanent": true
     }
+  ],
+  "rewrites": [
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
+    }
   ]
 }
