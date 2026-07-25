@@ -1,6 +1,7 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import javascriptObfuscator from 'vite-plugin-javascript-obfuscator';
+import { visualizer } from "rollup-plugin-visualizer";
 
 export default defineConfig({
   plugins: [
@@ -15,6 +16,12 @@ export default defineConfig({
       stringArrayShuffle: true,
       splitStrings: true,
       stringArrayThreshold: 1,
+    }),
+    visualizer({
+      filename: "dist/bundle-report.html",
+      open: true,
+      gzipSize: true,
+      brotliSize: true
     })
   ],
 
@@ -26,7 +33,6 @@ export default defineConfig({
         drop_debugger: true,
       },
     },
-    // बंडल साइज को छोटा करने के लिए code splitting
     rollupOptions: {
       output: {
         manualChunks(id) {
@@ -36,6 +42,7 @@ export default defineConfig({
         }
       }
     },
+    sourcemap: false,
     chunkSizeWarningLimit: 600, // वॉर्निंग लिमिट थोड़ी बढ़ा दी है
   },
 });
