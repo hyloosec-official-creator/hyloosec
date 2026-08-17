@@ -194,7 +194,6 @@ const SideBar = ({
     );
   }
 
-  // 2. Agar loading khatam ho gayi aur koi chat nahi mili
   if (!chats || chats.length === 0) {
     return (
       <>
