@@ -1,10 +1,18 @@
+/* ============================================================
+   SIDEBAR
+   ============================================================ */
 
 .sidebar {
   width: 350px;
-  height: 90%;
+  height: 100%;
+
+  background-color: var(--bg-white);
+
   border-right: 1px solid var(--border-light);
+
   display: flex;
   flex-direction: column;
+
   flex-shrink: 0;
 }
 
@@ -13,136 +21,469 @@
   border-radius: 50%;
 }
 
-/* Avatar & Status */
-.sidebar-avatar-wrapper {
-  position: relative;
+
+/* ============================================================
+   SEARCH BAR
+   ============================================================ */
+
+.search-bar {
+  display: flex;
+  align-items: center;
+
+  width: calc(100% - 24px);
+  height: 44px;
+
+  margin: 10px 12px 12px;
+  padding: 0 12px;
+
+  gap: 8px;
+
+  box-sizing: border-box;
+
+  background-color: var(--bg-input);
+  border: 1px solid var(--border-light);
+  border-radius: 14px;
+
+  transition:
+    background-color 0.3s ease,
+    border-color 0.3s ease,
+    box-shadow 0.2s ease;
+}
+
+.search-bar:hover {
+  border-color: var(--primary-green-light);
+
+  box-shadow:
+    0 3px 10px var(--shadow-main);
+}
+
+.search-bar:focus-within {
+  background-color: var(--bg-white);
+  border-color: var(--primary-green);
+
+  box-shadow:
+    0 3px 12px rgba(38, 182, 154, 0.15);
+}
+
+.search-icon {
+  flex-shrink: 0;
+
+  width: 21px;
+  height: 21px;
+
+  color: var(--text-muted);
+}
+
+.search-bar input {
+  flex: 1;
+
+  width: 100%;
+  min-width: 0;
+  height: 100%;
+
+  margin: 0;
+  padding: 0;
+
+  border: none !important;
+  outline: none !important;
+  border-radius: 0 !important;
+
+  background: transparent !important;
+  box-shadow: none !important;
+
+  font-size: 0.85rem;
+
+  color: var(--text-dark);
+}
+
+.search-bar input::placeholder {
+  color: var(--text-muted);
+}
+
+.search-bar input:focus {
+  outline: none !important;
+  border: none !important;
+}
+
+/* ============================================================
+   SIDEBAR LOADING CONTAINER
+   ============================================================ */
+
+.sidebar-container-loader {
+  width: 350px;
+  height: 100%;
+  background-color: var(--bg-white);
+  border-right: 1px solid var(--border-light);
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  overflow: hidden;
+}
+
+
+/* ============================================================
+   LOADING SEARCH BAR
+   ============================================================ */
+
+.loading-search-bar {
+  flex-shrink: 0;
+}
+
+.loading-search-bar input {
+  cursor: default;
+}
+
+
+/* ============================================================
+   SIDEBAR SKELETON LIST
+   ============================================================ */
+
+.sidebar-skeleton-list {
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+  padding: 0 12px;
+}
+
+
+/* ============================================================
+   SKELETON CHAT ITEM
+   ============================================================ */
+
+.skeleton-item {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  height: 74px;
+  margin: 7px 0;
+  padding: 10px 12px;
+  gap: 12px;
+
+  background-color: var(--bg-white);
+  border: 1px solid var(--border-light);
+  border-radius: 14px;
+
+  box-sizing: border-box;
+}
+
+
+/* ============================================================
+   SKELETON AVATAR
+   ============================================================ */
+
+.skeleton-avatar {
   width: 48px;
   height: 48px;
+  flex-shrink: 0;
   border-radius: 50%;
+  background-color: var(--bg-input);
+}
+
+
+/* ============================================================
+   SKELETON INFO
+   ============================================================ */
+
+.skeleton-info {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+}
+
+
+/* ============================================================
+   SKELETON NAME
+   ============================================================ */
+
+.skeleton-name {
+  width: 55%;
+  height: 11px;
+  border-radius: 6px;
+  background-color: var(--bg-input);
+}
+
+
+/* ============================================================
+   SKELETON MESSAGE
+   ============================================================ */
+
+.skeleton-text {
+  width: 75%;
+  height: 9px;
+  border-radius: 6px;
+  background-color: var(--bg-input);
+}
+
+
+/* ============================================================
+   MOBILE
+   ============================================================ */
+
+@media (max-width: 800px) {
+  .sidebar-container-loader {
+    width: 100% !important;
+  }
+}
+
+
+/* ============================================================
+   AVATAR & STATUS
+   ============================================================ */
+
+.sidebar-avatar-wrapper {
+  position: relative;
+
+  width: 48px;
+  height: 48px;
+
+  border-radius: 50%;
+
   flex-shrink: 0;
 }
 
 .sidebar-avatar-img {
   width: 100%;
   height: 100%;
+
   border-radius: 50%;
+
   object-fit: cover;
 }
 
 .status-dot {
   position: absolute;
+
   bottom: 2px;
   right: 2px;
+
   width: 12px;
   height: 12px;
+
   border-radius: 50%;
-  border: 2px solid white;
+
+  border: 2px solid var(--bg-white);
 }
 
 .status-dot.online {
-  background-color: #2ecc71;
+  background-color: var(--primary-green);
 }
 
 .status-dot.offline {
   display: none;
 }
 
-/* Chat Info & Online Label */
+
+/* ============================================================
+   CHAT INFO
+   ============================================================ */
+
 .chat-info {
   flex: 1;
+
   min-width: 0;
+
   display: flex;
   flex-direction: column;
+
   position: relative;
-}
-
-.online-indicator-text {
-  color: #2ecc71;
-  font-size: 0.7rem;
-  font-weight: 600;
-  margin-top: 2px;
-}
-
-/* Unread Bold States */
-.unread-name-bold {
-  font-weight: 800 !important;
-  color: #000000 !important;
-}
-
-.unread-msg-bold {
-  font-weight: 700 !important;
-  color: #111111 !important;
-}
-
-.unread-time-green {
-  color: #2ecc71 !important;
-  font-weight: 700;
-}
-
-.unread-badge-count {
-  background-color: #2ecc71;
-  color: rgb(0, 0, 0);
-  font-size: 0.7rem;
-  font-weight: 700;
-  padding: 2px 8px;
-  border-radius: 12px;
-  margin-left: 10px;
-}
-
-/* Ticks */
-.sidebar-tick {
-  display: inline-flex;
-  align-items: center;
-}
-
-.sidebar-tick svg {
-  filter: drop-shadow(0px 1px 1px rgba(0, 0, 0, 0.3));
-}
-
-
-.chat-item {
-  display: flex;
-  align-items: center;
-  padding: 7px 20px;
-  width: 100%;      
-  overflow: hidden;
-  gap: 12px;
-  cursor: pointer;
-  border-left: 4px solid transparent;
-}
-
-.chat-item:hover,
-.chat-item.active {
-  background-color: #b5b4b4;
-  border-left: 4px solid #2ecc71;
 }
 
 .chat-info-header {
   display: flex;
+
   justify-content: space-between;
   align-items: center;
 }
 
+.online-indicator-text {
+  color: var(--primary-green);
+
+  font-size: 0.7rem;
+  font-weight: 600;
+
+  margin-top: 2px;
+}
+
+
+/* ============================================================
+   UNREAD STATES
+   ============================================================ */
+
+.unread-name-bold {
+  font-weight: 800 !important;
+  color: var(--text-dark) !important;
+}
+
+.unread-msg-bold {
+  font-weight: 700 !important;
+  color: var(--text-dark) !important;
+}
+
+.unread-time-green {
+  color: var(--primary-green) !important;
+  font-weight: 700;
+}
+
+.unread-badge-count {
+  background-color: var(--primary-green);
+
+  color: var(--text-white);
+
+  font-size: 0.7rem;
+  font-weight: 700;
+
+  padding: 2px 8px;
+
+  border-radius: 12px;
+
+  margin-left: 10px;
+}
+
+
+/* ============================================================
+   CHAT CARD
+   ============================================================ */
+
+.chat-item {
+  display: flex;
+  align-items: center;
+
+  width: calc(100% - 24px);
+
+  margin: 7px 12px;
+  padding: 10px 12px;
+
+  overflow: hidden;
+
+  gap: 12px;
+
+  cursor: pointer;
+
+  background-color: var(--bg-white);
+
+  border: 1px solid var(--border-light);
+
+  border-radius: 14px;
+
+  box-sizing: border-box;
+
+  transition:
+    background-color 0.3s ease,
+    border-color 0.3s ease,
+    box-shadow 0.2s ease,
+    transform 0.2s ease;
+}
+
+
+/* ============================================================
+   CHAT CARD HOVER
+   ============================================================ */
+
+.chat-item:hover {
+  background-color: var(--bg-input);
+
+  border-color: var(--primary-green-light);
+
+  box-shadow:
+    0 3px 10px var(--shadow-main);
+}
+
+
+/* ============================================================
+   ACTIVE CHAT
+   ============================================================ */
+
+.chat-item.active {
+  background-color: var(--bg-input);
+
+  border: 1px solid var(--primary-green);
+
+  box-shadow:
+    0 3px 12px rgba(38, 182, 154, 0.15);
+}
+
+
+/* ============================================================
+   ACTIVE + HOVER
+   ============================================================ */
+
+.chat-item.active:hover {
+  background-color: var(--bg-input);
+
+  border-color: var(--primary-green);
+}
+
+
+/* ============================================================
+   UNREAD CHAT
+   ============================================================ */
+
+.chat-item.unread-chat {
+  border-color: rgba(38, 182, 154, 0.45);
+}
+
+
+/* ============================================================
+   TICKS
+   ============================================================ */
+
+.sidebar-tick {
+  display: inline-flex;
+
+  align-items: center;
+  justify-content: center;
+
+  width: max-content;
+  min-width: max-content;
+
+  margin-right: 3px;
+
+  flex-shrink: 0;
+
+  line-height: 1;
+}
+
+.sidebar-tick svg {
+  filter:
+    drop-shadow(0px 1px 1px var(--shadow-main));
+}
+
+
+/* ============================================================
+   SIDEBAR LOADER
+   ============================================================ */
+
 .sidebar-loader-container {
   display: inline-flex;
+
   align-items: center;
+
   gap: 3px;
+
   height: 10px;
+
   margin-left: 5px;
 }
 
 .dot-loader {
   width: 4px;
   height: 4px;
-  background-color: #2ecc71; /* Green dots like your theme */
+
+  background-color: var(--primary-green);
+
   border-radius: 50%;
+
   display: inline-block;
+
   animation: dot-flash 1.4s infinite linear;
 }
 
 .dot-loader:nth-child(2) {
   animation-delay: 0.2s;
 }
+
 .dot-loader:nth-child(3) {
   animation-delay: 0.4s;
 }
@@ -152,39 +493,111 @@
     opacity: 0.2;
     transform: scale(0.8);
   }
+
   50% {
     opacity: 1;
     transform: scale(1.1);
   }
+
   100% {
     opacity: 0.2;
     transform: scale(0.8);
   }
 }
 
+
+/* ============================================================
+   LAST MESSAGE ROW
+   ============================================================ */
+
 .sidebar-last-msg {
+  display: grid;
+
+  grid-template-columns:
+    auto
+    minmax(0, 1fr)
+    auto;
+
+  align-items: center;
+
+  width: 100%;
+  min-width: 0;
+
+  margin: 2px 0 0;
+
   font-size: 0.85rem;
-  color: #777;
+
+  color: var(--text-muted);
+
   white-space: nowrap;
+
   overflow: hidden;
-  text-overflow: ellipsis;
+
+  box-sizing: border-box;
 }
 
-/* Styling for the last seen text in sidebar */
+
+/* ============================================================
+   MESSAGE TEXT
+   ============================================================ */
+
+.msg-text-part {
+  min-width: 0;
+
+  width: 100%;
+
+  overflow: hidden;
+
+  white-space: nowrap;
+
+  text-overflow: ellipsis;
+
+  color: inherit;
+
+  line-height: 1.2;
+}
+
+
+/* ============================================================
+   LAST MESSAGE TIME
+   ============================================================ */
+
+.last-msg-time {
+  width: max-content;
+  min-width: max-content;
+
+  margin-left: 4px;
+
+  white-space: nowrap;
+
+  font-size: 0.75rem;
+
+  color: var(--text-muted);
+
+  flex-shrink: 0;
+
+  line-height: 1.2;
+}
+
+
+/* ============================================================
+   LAST SEEN
+   ============================================================ */
+
 .last-seen-sidebar-text {
   font-size: 0.65rem;
-  color: #888; /* Dim grey */
+
+  color: var(--text-muted);
+
   font-style: italic;
+
   margin-top: 2px;
 }
 
-/* Ensure the online text stays vibrant */
-.online-indicator-text {
-  color: #2ecc71;
-  font-size: 0.7rem;
-  font-weight: 600;
-  margin-top: 2px;
-}
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
 
 @media (max-width: 800px) {
   .sidebar {

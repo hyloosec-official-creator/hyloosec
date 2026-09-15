@@ -7,15 +7,6 @@
   background-color: var(--bg-main);
 }
 
-.sidebar {
-  width: 350px;
-  height: 80%;
-  border-right: 1px solid var(--border-light);
-  display: flex;
-  flex-direction: column;
-  flex-shrink: 0;
-}
-
 .sidebar-header,
 .chat-header {
   flex-shrink: 0;

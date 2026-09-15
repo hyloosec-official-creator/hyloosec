@@ -119,6 +119,7 @@
 
 /* --- Message Scrolling Area --- */
 .message-area {
+  position: relative;
   flex: 1;
   display: flex;
   flex-direction: column; /* Bubbles stack vertically */
@@ -180,6 +181,62 @@
 
 .tip-item i {
   color: #3b82f6; /* नीला रंग */
+}
+
+.loading-more-messages {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+
+  width: fit-content;
+  min-width: 170px;
+  margin: 10px auto 14px;
+  padding: 8px 14px;
+
+  background-color: var(--bg-white);
+  border: 1px solid var(--border-light);
+  border-radius: 20px;
+
+  color: var(--text-muted);
+  font-size: 0.78rem;
+  font-weight: 500;
+  letter-spacing: 0.1px;
+
+  box-shadow: 0 3px 12px var(--shadow-main);
+
+  animation: loadingMoreFade 0.2s ease-out;
+}
+
+/* Animated spinner */
+.loading-more-messages::before {
+  content: "";
+  width: 13px;
+  height: 13px;
+
+  border: 2px solid var(--border-light);
+  border-top-color: var(--primary-green);
+  border-radius: 50%;
+
+  animation: loadingMoreSpin 0.7s linear infinite;
+}
+
+@keyframes loadingMoreSpin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes loadingMoreFade {
+  from {
+    opacity: 0;
+    transform: translateY(-5px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 /* खाली चैट के लिए मिनिमल स्टाइल */
@@ -354,6 +411,7 @@
     transform: scale(1);
   }
 }
+
 
 /* PDF / Document Bubble Styling */
 .document-bubble {
@@ -1087,4 +1145,40 @@
     gap: 10px;
     flex: 1;
   }
+}
+
+/* --- Scroll To Bottom Button --- */
+.scroll-to-bottom-btn {
+  position: absolute;
+  right: 20px;
+  bottom: 20px;
+
+  width: 44px;
+  height: 44px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: var(--bg-white);
+  color: var(--primary-green);
+
+  border: 1px solid var(--border-light);
+  border-radius: 50%;
+
+  font-size: 24px;
+  font-weight: 600;
+
+  cursor: pointer;
+
+  box-shadow: 0 4px 14px var(--shadow-main);
+
+  z-index: 9999;
+
+  opacity: 1;
+  visibility: visible;
+}
+
+.scroll-to-bottom-btn:hover {
+  transform: scale(1.05);
 }

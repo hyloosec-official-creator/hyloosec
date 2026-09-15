@@ -30,11 +30,15 @@ const chatSlice = createSlice({
     },
     setActiveChat: (state, action) => {
       state.activeChatId = action.payload;
-      // When opening a chat, find it and reset unread count locally
+
       const chat = state.chats.find(
         (c) => String(c.id) === String(action.payload),
       );
-      if (chat) chat.unreadCount = 0;
+
+      if (chat) {
+        chat.unreadCount = 0;
+        chat.isActuallyUnread = false;
+      }
     },
 
     updateUserStatus: (state, action) => {
@@ -48,9 +52,44 @@ const chatSlice = createSlice({
 
     setMessagesForChat: (state, action) => {
       const { chatId, messages } = action.payload;
+
       const chat = state.chats.find((c) => String(c.id) === String(chatId));
+
       if (chat) {
-        chat.messages = messages;
+        const existingMessages = chat.messages || [];
+
+        // History + realtime messages ko merge karo
+        const mergedMessages = [...messages, ...existingMessages];
+
+        // Duplicate messages remove karo
+        const uniqueMessages = mergedMessages.filter((msg, index, arr) => {
+          const msgId = String(
+            msg._id || msg.messageId || `${msg.senderId}_${msg.timestamp}`,
+          );
+
+          return (
+            index ===
+            arr.findIndex(
+              (m) =>
+                String(
+                  m._id || m.messageId || `${m.senderId}_${m.timestamp}`,
+                ) === msgId,
+            )
+          );
+        });
+
+        // Oldest -> newest
+        uniqueMessages.sort(
+          (a, b) =>
+            new Date(a.timestamp || 0).getTime() -
+            new Date(b.timestamp || 0).getTime(),
+        );
+
+        chat.messages = uniqueMessages;
+
+        // IMPORTANT:
+        // Ab database history successfully load ho chuki hai
+        chat.historyLoaded = true;
       }
     },
 
@@ -71,6 +110,7 @@ const chatSlice = createSlice({
           lastMsg: "New Conversation",
           lastMsgTime: new Date().toISOString(),
           messages: newUser.messages || [],
+          historyLoaded: false,
           unreadCount: 0,
           online: false,
           lastSeen: null,
@@ -80,7 +120,13 @@ const chatSlice = createSlice({
     },
 
     updateSidebarMessage: (state, action) => {
-      const { chatId, message, currentUserId } = action.payload;
+      const {
+        chatId,
+        message,
+        currentUserId,
+        isHistoryLoad = false,
+      } = action.payload;
+
       if (!state.chats) state.chats = [];
 
       const chatIndex = state.chats.findIndex(
@@ -89,6 +135,7 @@ const chatSlice = createSlice({
 
       if (chatIndex !== -1) {
         const chat = state.chats[chatIndex];
+
         if (!chat.messages) chat.messages = [];
 
         const isDuplicate = chat.messages.some(
@@ -101,37 +148,121 @@ const chatSlice = createSlice({
         if (!isDuplicate) {
           chat.messages.push(message);
 
-          // FIX: Static string hatao, sirf object update karo
+          // Last message information
           chat.lastMsgObj = message;
-          // lastMsg ko sirf tab update karo agar wo media file ho
+
+          // ==========================================
+          // 📦 LAST MESSAGE TYPE
+          // t = text
+          // i = image
+          // v = video
+          // a = audio
+          // d = document
+          // ==========================================
+
+          if (message.lastMessageType) {
+            chat.lastMessageType = message.lastMessageType;
+          } else if (message.files?.length > 0) {
+            const mime = message.files[0]?.type || "";
+
+            if (mime.startsWith("image/")) {
+              chat.lastMessageType = "i";
+            } else if (mime.startsWith("video/")) {
+              chat.lastMessageType = "v";
+            } else if (mime.startsWith("audio/")) {
+              chat.lastMessageType = "a";
+            } else {
+              chat.lastMessageType = "d";
+            }
+          } else {
+            chat.lastMessageType = "t";
+          }
+
           if (message.files?.length > 0) {
             chat.lastMsg = "📎 Attachment";
           } else {
-            // Isse empty rakho ya current value rehne do, SidebarMsgPreview handles the rest
             chat.lastMsg = "";
           }
 
-          chat.lastMsgTime = new Date().toISOString();
+          chat.lastMsgTime = message.timestamp
+            ? new Date(message.timestamp).toISOString()
+            : new Date().toISOString();
+
           chat.lastMessageStatus = message.status || "sent";
           chat.lastMessageSenderId = String(message.senderId);
 
+          // =====================================================
+          // 🔥 UNREAD COUNT
+          // =====================================================
+
+          const isIncoming = String(message.senderId) !== String(currentUserId);
+
+          const isCurrentChat = String(state.activeChatId) === String(chatId);
+
+          // History load par unread increment nahi karna
+          if (isIncoming && !isCurrentChat && !isHistoryLoad) {
+            chat.unreadCount = (chat.unreadCount || 0) + 1;
+            chat.isActuallyUnread = true;
+          }
+
+          // Agar current chat open hai
+          if (isCurrentChat) {
+            chat.unreadCount = 0;
+            chat.isActuallyUnread = false;
+          }
+
+          // Existing chat ko top par move karo
           state.chats.splice(chatIndex, 1);
           state.chats.unshift(chat);
         }
       } else {
-        // New Contact logic (Same fix here)
+        // =====================================================
+        // 🆕 NEW CONTACT
+        // =====================================================
+
+        const isIncoming = String(message.senderId) !== String(currentUserId);
+
+        let lastMessageType = "t";
+
+        if (message.lastMessageType) {
+          lastMessageType = message.lastMessageType;
+        } else if (message.files?.length > 0) {
+          const mime = message.files[0]?.type || "";
+
+          if (mime.startsWith("image/")) {
+            lastMessageType = "i";
+          } else if (mime.startsWith("video/")) {
+            lastMessageType = "v";
+          } else if (mime.startsWith("audio/")) {
+            lastMessageType = "a";
+          } else {
+            lastMessageType = "d";
+          }
+        }
+
         state.chats.unshift({
           id: chatId,
           name: message.senderName || "New Contact",
           avatar: message.senderAvatar || "",
+
           lastMsg: message.files?.length > 0 ? "📎 Attachment" : "",
           lastMsgObj: message,
-          lastMsgTime: new Date().toISOString(),
+
+          // 📦 t / i / v / a / d
+          lastMessageType,
+          historyLoaded: false,
+          lastMsgTime: message.timestamp
+            ? new Date(message.timestamp).toISOString()
+            : new Date().toISOString(),
+
           messages: [message],
-          unreadCount:
-            String(message.senderId) !== String(currentUserId) ? 1 : 0,
+
+          unreadCount: isIncoming ? 1 : 0,
+          isActuallyUnread: isIncoming,
+
           online: message.senderOnline || false,
-          lastSeen: message.senderLastSeen || new Date().toISOString(),
+          lastSeen: message.senderLastSeen || null,
+
           lastMessageStatus: message.status || "sent",
           lastMessageSenderId: String(message.senderId),
         });
@@ -248,6 +379,10 @@ const chatSlice = createSlice({
             ...serverChat,
             id: serverChat.id || serverChat._id,
             lastMsgObj: existing?.lastMsgObj || serverChat.lastMsgObj || null,
+            lastMessageType:
+              serverChat.lastMessageType || existing?.lastMessageType || "t",
+            historyLoaded:
+              existing?.historyLoaded || serverChat.historyLoaded || false,
           };
         });
       })

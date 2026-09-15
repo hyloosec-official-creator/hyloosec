@@ -55,7 +55,9 @@ const Home = ({ activeTab }) => {
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 800);
   const [isInitialLoading, setIsInitialLoading] = useState(true);
   const [sessionSecret, setSessionSecret] = useState(null);
+  const [paginationState, setPaginationState] = useState({});
   const isFetchingRef = useRef(false);
+  const paginationRef = useRef({});
 
   useEffect(() => {
     const handleResize = () => {
@@ -78,11 +80,7 @@ const Home = ({ activeTab }) => {
       const targetChat = chats.find(
         (c) => String(c.id) === String(activeChatId),
       );
-
-      if (
-        targetChat &&
-        (!targetChat.messages || targetChat.messages.length === 0)
-      ) {
+      if (targetChat && !targetChat.historyLoaded) {
         console.log("Auto-restoring active chat...");
         isFetchingRef.current = true;
         handleSelectChat(activeChatId).finally(() => {
@@ -92,7 +90,7 @@ const Home = ({ activeTab }) => {
     }
   }, [activeChatId, chats]);
 
-useEffect(() => {
+  useEffect(() => {
     const initializeSidebar = async () => {
       if (!currentUser?.userId) return;
 
@@ -104,10 +102,22 @@ useEffect(() => {
       }
 
       setIsInitialLoading(true);
-      
+
       try {
-        const mongoRes = await MongoAPI.get(`/conversations/${currentUser.userId}`);
+        const mongoRes = await MongoAPI.get(
+          `/conversations/${currentUser.userId}`,
+        );
         const conversations = mongoRes.data;
+
+        console.log(
+          "🔥 Conversation statuses:",
+          conversations.map((c) => ({
+            participants: c.participants,
+            lastMessage: c.lastMessage,
+            lastMessageStatus: c.lastMessageStatus,
+            lastMessageSenderId: c.lastMessageSenderId,
+          })),
+        );
 
         if (!Array.isArray(conversations) || conversations.length === 0) return;
 
@@ -131,19 +141,24 @@ useEffect(() => {
             lastMsg: mongoConv?.lastMessage || "No messages yet",
             lastMsgTime: mongoConv?.updatedAt || new Date().toISOString(),
             lastMsgObj: mongoConv?.lastMsgObj || null,
+            lastMessageType: mongoConv?.lastMessageType || "t",
             lastMessageStatus: mongoConv?.lastMessageStatus || "sent",
             lastMessageSenderId: mongoConv?.lastMessageSenderId,
             lastSeen: mongoConv?.lastSeen || null,
             online: mongoConv?.online || false,
             unreadCount: mongoConv?.unreadCount || 0,
             messages: [],
+            historyLoaded: false,
           };
         });
 
         // 2. SYNC: नया डेटा रेडक्स और लोकल स्टोरेज दोनों में सेव करें
         dispatch(setChats(formattedChats));
-        localStorage.setItem(`chats_${currentUser.userId}`, JSON.stringify(formattedChats));
-        
+        localStorage.setItem(
+          `chats_${currentUser.userId}`,
+          JSON.stringify(formattedChats),
+        );
+
         socket.emit("request_online_users");
       } catch (err) {
         console.error("Initialization failed:", err);
@@ -170,34 +185,12 @@ useEffect(() => {
         setSessionSecret(data.secretKey);
       });
 
-      socket.on("message_status_updated", (data) => {
-        if (data.newId) {
-          dispatch(
-            updateMessageStatus({
-              chatId: data.chatId,
-              messageId: data.messageId, // tempId
-              newId: data.newId, // DB ID
-              status: data.status,
-            }),
-          );
-        } else {
-          dispatch(updateMessageStatus(data));
-        }
-      });
-
       socket.on("message_status_sync", (data) => {
         console.log("Status Sync Received:", data);
         dispatch(
           bulkUpdateMessageStatus({
             chatId: data.chatId,
             status: data.status,
-          }),
-        );
-        dispatch(
-          updateSidebarMessage({
-            chatId: data.chatId,
-            message: { status: data.status }, // This helps the sidebar tick update
-            currentUserId: currentUser.userId,
           }),
         );
       });
@@ -220,11 +213,13 @@ useEffect(() => {
 
       socket.on("message_status_updated", (data) => {
         console.log("Real-time Status Update Received:", data);
+
         dispatch(
           updateMessageStatus({
             chatId: String(data.chatId),
             messageId: String(data.messageId),
             status: data.status,
+            newId: data.newId,
             dbId: data.dbId || data._id,
           }),
         );
@@ -293,6 +288,83 @@ useEffect(() => {
     return () => clearInterval(syncInterval);
   }, [currentUser?.userId]);
 
+  const loadMoreMessages = useCallback(
+    async (chatId) => {
+      if (!currentUser?.userId || !chatId) return;
+
+      const key = String(chatId);
+
+      if (!paginationRef.current[key]) {
+        paginationRef.current[key] = {
+          skip: 0,
+          hasMore: true,
+          loading: false,
+        };
+      }
+
+      const pagination = paginationRef.current[key];
+
+      if (pagination.loading || !pagination.hasMore) return;
+
+      // Ref = immediate lock
+      pagination.loading = true;
+
+      // State = React UI update
+      setPaginationState((prev) => ({
+        ...prev,
+        [key]: {
+          ...pagination,
+          loading: true,
+        },
+      }));
+
+      const nextSkip = pagination.skip + 50;
+
+      try {
+        const res = await MongoAPI.get(
+          `/messages/${currentUser.userId}/${chatId}?limit=50&skip=${nextSkip}`,
+        );
+
+        const olderMessages = res.data || [];
+
+        dispatch(
+          setMessagesForChat({
+            chatId,
+            messages: olderMessages,
+          }),
+        );
+
+        pagination.skip = nextSkip;
+
+        if (olderMessages.length < 50) {
+          pagination.hasMore = false;
+        }
+
+        // UI update after loading completes
+        setPaginationState((prev) => ({
+          ...prev,
+          [key]: {
+            ...pagination,
+            loading: false,
+          },
+        }));
+      } catch (err) {
+        console.error("Failed to load older messages:", err);
+
+        setPaginationState((prev) => ({
+          ...prev,
+          [key]: {
+            ...pagination,
+            loading: false,
+          },
+        }));
+      } finally {
+        pagination.loading = false;
+      }
+    },
+    [currentUser?.userId, dispatch],
+  );
+
   const handleSelectChat = useCallback(
     async (id) => {
       dispatch(setActiveChat(id));
@@ -304,20 +376,40 @@ useEffect(() => {
 
       const targetChat = chats.find((c) => String(c.id) === String(id));
 
-      if (
-        targetChat &&
-        (!targetChat.messages || targetChat.messages.length === 0)
-      ) {
+      if (targetChat && !targetChat.historyLoaded) {
         try {
+          const key = String(id);
+
+          paginationRef.current[key] = {
+            skip: 0,
+            hasMore: true,
+            loading: false,
+          };
+
+          setPaginationState((prev) => ({
+            ...prev,
+            [key]: {
+              skip: 0,
+              hasMore: true,
+              loading: false,
+            },
+          }));
+
           const res = await MongoAPI.get(
             `/messages/${currentUser.userId}/${id}?limit=50&skip=0`,
           );
 
           if (res.data) {
-            dispatch(setMessagesForChat({ chatId: id, messages: res.data }));
+            dispatch(
+              setMessagesForChat({
+                chatId: id,
+                messages: res.data,
+              }),
+            );
 
             if (res.data.length > 0) {
               const lastMsg = res.data[res.data.length - 1];
+
               dispatch(
                 updateSidebarMessage({
                   chatId: id,
@@ -327,6 +419,19 @@ useEffect(() => {
                 }),
               );
             }
+
+            // Initial page itself 50 se kam hai
+            paginationRef.current[key].hasMore = res.data.length >= 50;
+
+            setPaginationState((prev) => ({
+              ...prev,
+              [key]: {
+                ...(prev[key] || {}),
+                skip: 0,
+                hasMore: res.data.length >= 50,
+                loading: false,
+              },
+            }));
           }
         } catch (err) {
           console.error("Database fetch failed:", err);
@@ -334,7 +439,7 @@ useEffect(() => {
       }
     },
     [chats, currentUser?.userId, dispatch],
-  ); 
+  );
 
   const handleFileSelect = (files) => {
     console.log("Files received in Home:", files); // <--- DEBUG HERE
@@ -363,17 +468,37 @@ useEffect(() => {
     const tempId = `temp_${Date.now()}`;
     const timestamp = Date.now();
 
+    const filesToUpload = allFiles[chatId] || [];
+
+    let pendingMessageType = "t";
+    const pendingMime = filesToUpload[0]?.type || "";
+
+    if (pendingMime.startsWith("image/")) {
+      pendingMessageType = "i";
+    } else if (pendingMime.startsWith("video/")) {
+      pendingMessageType = "v";
+    } else if (pendingMime.startsWith("audio/")) {
+      pendingMessageType = "a";
+    } else if (filesToUpload.length > 0) {
+      pendingMessageType = "d";
+    }
+
     dispatch(
       updateSidebarMessage({
         chatId,
-        message: { ...newMessage, messageId: tempId, status: "sending" },
+        message: {
+          ...newMessage,
+          messageId: tempId,
+          status: "sending",
+          files: filesToUpload,
+          lastMessageType: pendingMessageType,
+        },
         currentUserId: currentUser.userId,
       }),
     );
 
     try {
       let processedFiles = [];
-      const filesToUpload = allFiles[chatId];
 
       if (filesToUpload && filesToUpload.length > 0) {
         for (let f of filesToUpload) {
@@ -472,11 +597,22 @@ useEffect(() => {
         <ChatWindow
           activeChat={activeChat}
           activeFile={activeFile}
-          onFileSelect={handleFileSelect} // Passed missing prop
+          onFileSelect={handleFileSelect}
           onSendMessage={handleNewMessage}
-          isTyping={isTyping} // Passed missing prop
+          isTyping={isTyping}
           uploadProgress={uploadProgress[activeChatId] || 0}
-          onBack={() => dispatch(setActiveChat(null))} // ✅ PASS PROGRESS HERE
+          onBack={() => dispatch(setActiveChat(null))}
+          onLoadMoreMessages={loadMoreMessages}
+          isLoadingMoreMessages={
+            activeChatId
+              ? paginationState[String(activeChatId)]?.loading || false
+              : false
+          }
+          hasMoreMessages={
+            activeChatId
+              ? (paginationState[String(activeChatId)]?.hasMore ?? true)
+              : true
+          }
         />
       )}
     </div>

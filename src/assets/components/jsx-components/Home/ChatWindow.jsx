@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useLayoutEffect } from "react";
 import EmojiPicker from "emoji-picker-react";
 import { useDispatch, useSelector } from "react-redux";
 import { CiUser } from "react-icons/ci";
@@ -97,15 +97,21 @@ const ChatWindow = ({
   uploadProgress,
   onBack,
   isTyping = false,
+  onLoadMoreMessages = () => {},
+  isLoadingMoreMessages = false,
+  hasMoreMessages = true,
 }) => {
   /* ================= STATE ================= */
   const [inputText, setInputText] = useState("");
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const [isUserInfoOpen, setIsUserInfoOpen] = useState(false);
   const [previewMedia, setPreviewMedia] = useState(null); // For Lightbox
+  const [showScrollToBottom, setShowScrollToBottom] = useState(false);
   const [decryptedCache, setDecryptedCache] = useState({});
 
+  const previousScrollRef = useRef(null);
   const scrollRef = useRef(null);
+  const messageAreaRef = useRef(null);
   const emojiPickerRef = useRef(null);
   const typingTimeoutRef = useRef(null);
   const inputRef = useRef(null); // Input field ke liye ref
@@ -122,27 +128,24 @@ const ChatWindow = ({
   const isInitialLoad = useRef(true);
 
   /* ================= EFFECTS ================= */
+  useLayoutEffect(() => {
+    const container = messageAreaRef.current;
 
-  // Scroll to bottom whenever messages change or a new chat is selected
-  useEffect(() => {
-    if (messages.length > 0) {
-      // If it's a brand new chat, jump to bottom instantly
-      // If it's just a new message, scroll smoothly
-      const scrollBehavior = isInitialLoad.current ? "auto" : "smooth";
+    if (!container || !displayId || messages.length === 0) return;
 
-      // RequestAnimationFrame is more reliable than setTimeout for DOM updates
-      const handleScroll = () => {
-        scrollRef.current?.scrollIntoView({
-          behavior: scrollBehavior,
-          block: "end", // Ensures it aligns to the bottom of the container
-        });
-        isInitialLoad.current = false;
-      };
+    // Older messages load hone ke baad previous position restore karo
+    if (previousScrollRef.current) {
+      const { scrollHeight, scrollTop } = previousScrollRef.current;
 
-      const timer = setTimeout(handleScroll, 50);
-      return () => clearTimeout(timer);
+      container.scrollTop = scrollTop + (container.scrollHeight - scrollHeight);
+
+      previousScrollRef.current = null;
+      return;
     }
-  }, [messages, displayId]); // Added displayId to reset context
+
+    // Chat open/refresh hone par latest message bottom mein
+    container.scrollTop = container.scrollHeight;
+  }, [displayId, messages.length]);
 
   useEffect(() => {
     console.log("Active Files in State:", activeFile);
@@ -202,11 +205,6 @@ const ChatWindow = ({
         handleVisualViewportResize,
       );
     }
-
-    window.visualViewport?.addEventListener(
-      "resize",
-      handleVisualViewportResize,
-    );
     return () =>
       window.visualViewport?.removeEventListener(
         "resize",
@@ -228,6 +226,28 @@ const ChatWindow = ({
       };
     }
   }, [activeChat, onBack]);
+
+  const handleMessageAreaScroll = (e) => {
+    const container = e.currentTarget;
+
+    const distanceFromBottom =
+      container.scrollHeight - container.scrollTop - container.clientHeight;
+
+    setShowScrollToBottom(distanceFromBottom > 150);
+
+    if (
+      container.scrollTop <= 100 &&
+      hasMoreMessages &&
+      !isLoadingMoreMessages
+    ) {
+      previousScrollRef.current = {
+        scrollHeight: container.scrollHeight,
+        scrollTop: container.scrollTop,
+      };
+
+      onLoadMoreMessages(displayId);
+    }
+  };
 
   const handleInputFocus = React.useCallback(() => {
     setTimeout(() => {
@@ -271,7 +291,6 @@ const ChatWindow = ({
       );
     }
   }, [displayId, messages.length, myId, activeChat?.id, dispatch]);
-
   /* ================= HANDLERS ================= */
 
   const handleSendMessage = async () => {
@@ -573,7 +592,11 @@ const ChatWindow = ({
       ) : (
         <>
           {/* ---------- MESSAGE AREA ---------- */}
-          <section className="message-area">
+          <section
+            ref={messageAreaRef}
+            className="message-area"
+            onScroll={handleMessageAreaScroll}
+          >
             <div className="empty-chat-welcome">
               <div className="security-badge">
                 <i className="ph ph-lock-key-fill"></i>
@@ -599,6 +622,12 @@ const ChatWindow = ({
                 </div>
               </div>
             </div>
+
+            {isLoadingMoreMessages && (
+              <div className="loading-more-messages">
+                Loading older messages...
+              </div>
+            )}
 
             {messages.length === 0 && (
               <div className="empty-chat-welcome">
@@ -660,7 +689,13 @@ const ChatWindow = ({
               };
 
               return (
-                <React.Fragment key={`${msg._id || msg.messageId}-${index}`}>
+                <React.Fragment
+                  key={
+                    msg._id ||
+                    msg.messageId ||
+                    `${msg.senderId}_${msg.timestamp}`
+                  }
+                >
                   {showDateHeader && (
                     <div className="chat-date-separator">
                       <span>{dateLabel}</span>
@@ -742,6 +777,21 @@ const ChatWindow = ({
             )}
 
             <div ref={scrollRef} style={{ float: "left", clear: "both" }} />
+
+            {showScrollToBottom && (
+              <button
+                className="scroll-to-bottom-btn"
+                onClick={() => {
+                  messageAreaRef.current?.scrollTo({
+                    top: messageAreaRef.current.scrollHeight,
+                    behavior: "smooth",
+                  });
+                }}
+                aria-label="Scroll to bottom"
+              >
+                ↓
+              </button>
+            )}
           </section>
           {/* ---------- INPUT AREA ---------- */}
           <footer className="chat-input">
