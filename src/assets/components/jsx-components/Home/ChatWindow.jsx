@@ -778,7 +778,7 @@ const ChatWindow = ({
 
             <div ref={scrollRef} style={{ float: "left", clear: "both" }} />
 
-            {showScrollToBottom && (
+            {/* {showScrollToBottom && (
               <button
                 className="scroll-to-bottom-btn"
                 onClick={() => {
@@ -791,7 +791,7 @@ const ChatWindow = ({
               >
                 ↓
               </button>
-            )}
+            )} */}
           </section>
           {/* ---------- INPUT AREA ---------- */}
           <footer className="chat-input">
