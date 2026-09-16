@@ -7,7 +7,6 @@ import Home from "./assets/components/jsx-components/Home.jsx";
 import SideNav from "./assets/components/jsx-components/SideNav.jsx";
 import Settings from "./assets/components/jsx-components/Settings.jsx";
 import Auth from "./Auth/Auth.jsx";
-import About from "./Auth/components/About.jsx";
 
 const App = () => {
   const { user, isSessionExpired } = useSelector((state) => state.auth);
@@ -58,8 +57,8 @@ const App = () => {
     console.log("Current activeTab is:", activeTab);
   }, [activeTab]);
 
-  if (window.location.pathname === "/about") {
-    return <About />;
+  if (window.location.pathname.startsWith("/about")) {
+    return <Auth />;
   }
 
   if (!user) {

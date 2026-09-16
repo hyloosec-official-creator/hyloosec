@@ -1,0 +1,480 @@
+/* =========================================
+   CREATE DOCUMENTATION PAGE
+   ========================================= */
+
+.documentation-page {
+  width: 100%;
+  max-width: 1050px;
+  margin: 0 auto;
+  padding: 40px 30px 70px;
+  box-sizing: border-box;
+  color: #555;
+  line-height: 1.7;
+}
+
+
+/* =========================================
+   HEADER
+   ========================================= */
+
+.documentation-header {
+  padding-bottom: 30px;
+  margin-bottom: 35px;
+  border-bottom: 1px solid #e9e9e9;
+}
+
+.documentation-header h1 {
+  margin: 0 0 14px;
+  color: #222;
+  font-size: 2.2rem;
+  font-weight: 700;
+  line-height: 1.25;
+}
+
+.documentation-description {
+  margin: 0 0 20px;
+  max-width: 850px;
+  color: #777;
+  font-size: 1.05rem;
+}
+
+.documentation-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.documentation-meta span {
+  padding: 6px 12px;
+  border: 1px solid #e8e8e8;
+  border-radius: 20px;
+  background: #fafafa;
+  color: #777;
+  font-size: 0.82rem;
+}
+
+
+/* =========================================
+   SECTIONS
+   ========================================= */
+
+.documentation-section {
+  margin-bottom: 45px;
+}
+
+.documentation-section > h2 {
+  margin: 0 0 18px;
+  padding-bottom: 9px;
+  border-bottom: 2px solid #f0f0f0;
+  color: #252525;
+  font-size: 1.45rem;
+  font-weight: 650;
+}
+
+.documentation-section > p {
+  margin: 0 0 18px;
+  color: #666;
+}
+
+.documentation-block {
+  margin-bottom: 20px;
+}
+
+.documentation-block > p {
+  margin: 0 0 14px;
+}
+
+
+/* =========================================
+   INFO / WARNING / TIP
+   ========================================= */
+
+.documentation-info,
+.documentation-warning,
+.documentation-tip {
+  margin: 20px 0;
+  padding: 16px 18px;
+  border-radius: 10px;
+  background: #fafafa;
+  border-left: 4px solid #999;
+}
+
+.documentation-info {
+  border-left-color: #007bff;
+}
+
+.documentation-warning {
+  border-left-color: #f0a000;
+}
+
+.documentation-tip {
+  border-left-color: #28a745;
+}
+
+.documentation-info strong,
+.documentation-warning strong,
+.documentation-tip strong {
+  display: block;
+  margin-bottom: 5px;
+  color: #333;
+  font-size: 0.95rem;
+}
+
+.documentation-info p,
+.documentation-warning p,
+.documentation-tip p {
+  margin: 0;
+  color: #666;
+}
+
+
+/* =========================================
+   LISTS
+   ========================================= */
+
+.documentation-page ul,
+.documentation-page ol {
+  margin: 12px 0 20px;
+  padding-left: 25px;
+}
+
+.documentation-page li {
+  margin-bottom: 8px;
+  color: #5f5f5f;
+}
+
+.documentation-page li::marker {
+  color: #888;
+}
+
+
+/* =========================================
+   STEPS
+   ========================================= */
+
+.documentation-steps {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin-top: 20px;
+}
+
+.documentation-step {
+  display: flex;
+  gap: 16px;
+  padding: 18px;
+  border: 1px solid #e8e8e8;
+  border-radius: 12px;
+  background: #fff;
+  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.04);
+}
+
+.step-number {
+  flex-shrink: 0;
+  width: 34px;
+  height: 34px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 50%;
+  background: #222;
+  color: #fff;
+
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.step-content {
+  flex: 1;
+}
+
+.step-content h3 {
+  margin: 1px 0 5px;
+  color: #333;
+  font-size: 1rem;
+  font-weight: 650;
+}
+
+.step-content p {
+  margin: 0;
+  color: #666;
+  font-size: 0.94rem;
+}
+
+
+/* =========================================
+   TROUBLESHOOTING
+   ========================================= */
+
+.documentation-troubleshooting {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.troubleshooting-item {
+  padding: 16px 18px;
+  border: 1px solid #e9e9e9;
+  border-radius: 10px;
+  background: #fafafa;
+}
+
+.troubleshooting-item h3 {
+  margin: 0 0 6px;
+  color: #333;
+  font-size: 1rem;
+}
+
+.troubleshooting-item p {
+  margin: 0;
+  color: #666;
+  font-size: 0.94rem;
+}
+
+
+/* =========================================
+   FIELD GUIDE
+   ========================================= */
+
+.documentation-field-guide {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.documentation-field {
+  padding: 18px 20px;
+  border: 1px solid #e7e7e7;
+  border-radius: 12px;
+  background: #fff;
+  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.035);
+}
+
+.documentation-field h4 {
+  margin: 0 0 8px;
+  color: #292929;
+  font-size: 1.02rem;
+  font-weight: 650;
+}
+
+.documentation-field p {
+  margin: 6px 0;
+  color: #666;
+  font-size: 0.94rem;
+}
+
+.documentation-field strong {
+  color: #444;
+}
+
+.documentation-field ul {
+  margin: 12px 0 0;
+}
+
+.documentation-field li {
+  margin-bottom: 7px;
+}
+
+.required {
+  color: #e53935;
+  font-weight: 700;
+}
+
+
+/* =========================================
+   LOADING / ERROR
+   ========================================= */
+
+.documentation-loading,
+.documentation-error {
+  width: 100%;
+  padding: 50px 20px;
+  box-sizing: border-box;
+  text-align: center;
+}
+
+.documentation-loading {
+  color: #777;
+}
+
+.documentation-error {
+  color: #d32f2f;
+}
+
+
+/* =========================================
+   BOTTOM NAVIGATION
+   ========================================= */
+
+.documentation-navigation {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 15px;
+
+  margin-top: 50px;
+  padding-top: 25px;
+
+  border-top: 1px solid #e9e9e9;
+}
+
+.documentation-nav-btn {
+  min-width: 130px;
+  padding: 11px 20px;
+
+  border: 1px solid #ddd;
+  border-radius: 8px;
+
+  background: #fff;
+  color: #333;
+
+  font-size: 0.95rem;
+  font-weight: 600;
+
+  cursor: pointer;
+
+  transition:
+    background 0.2s ease,
+    color 0.2s ease,
+    border-color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.documentation-nav-btn:hover {
+  background: #f5f5f5;
+  border-color: #bbb;
+  transform: translateY(-1px);
+}
+
+.documentation-nav-btn:active {
+  transform: translateY(0);
+}
+
+
+/* =========================================
+   HOVER EFFECTS
+   ========================================= */
+
+.documentation-step,
+.documentation-field,
+.troubleshooting-item {
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.documentation-step:hover,
+.documentation-field:hover {
+  transform: translateY(-2px);
+  border-color: #ddd;
+  box-shadow: 0 7px 20px rgba(0, 0, 0, 0.06);
+}
+
+
+/* =========================================
+   MOBILE
+   ========================================= */
+
+@media (max-width: 700px) {
+
+  .documentation-page {
+    padding: 25px 16px 50px;
+  }
+
+  .documentation-header {
+    padding-bottom: 24px;
+    margin-bottom: 28px;
+  }
+
+  .documentation-header h1 {
+    font-size: 1.7rem;
+  }
+
+  .documentation-description {
+    font-size: 0.95rem;
+  }
+
+  .documentation-section {
+    margin-bottom: 35px;
+  }
+
+  .documentation-section > h2 {
+    font-size: 1.25rem;
+  }
+
+  .documentation-meta {
+    gap: 7px;
+  }
+
+  .documentation-meta span {
+    padding: 5px 9px;
+    font-size: 0.76rem;
+  }
+
+  .documentation-step {
+    gap: 12px;
+    padding: 14px;
+  }
+
+  .step-number {
+    width: 30px;
+    height: 30px;
+    font-size: 0.8rem;
+  }
+
+  .step-content h3 {
+    font-size: 0.95rem;
+  }
+
+  .step-content p,
+  .documentation-field p,
+  .troubleshooting-item p {
+    font-size: 0.9rem;
+  }
+
+  .documentation-field {
+    padding: 15px;
+  }
+
+  /* Bottom buttons */
+  .documentation-navigation {
+    gap: 10px;
+    margin-top: 35px;
+    padding-top: 20px;
+  }
+
+  .documentation-nav-btn {
+    min-width: 0;
+    flex: 1;
+    padding: 10px 12px;
+    font-size: 0.88rem;
+  }
+}
+
+
+/* =========================================
+   VERY SMALL SCREENS
+   ========================================= */
+
+@media (max-width: 380px) {
+
+  .documentation-page {
+    padding-left: 12px;
+    padding-right: 12px;
+  }
+
+  .documentation-header h1 {
+    font-size: 1.5rem;
+  }
+
+  .documentation-navigation {
+    flex-direction: column;
+  }
+
+  .documentation-nav-btn {
+    width: 100%;
+  }
+}

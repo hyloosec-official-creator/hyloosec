@@ -1,0 +1,393 @@
+/* =========================
+   DOCUMENTATION HOME
+   ========================= */
+
+.documentation {
+  width: 100%;
+  max-width: 1050px;
+
+  margin: 0 auto;
+  padding: 55px 30px 45px;
+
+  box-sizing: border-box;
+}
+
+
+/* =========================
+   HEADER
+   ========================= */
+
+.documentation-home-header {
+  text-align: center;
+
+  margin-bottom: 42px;
+}
+
+.documentation-home-badge {
+  display: inline-flex;
+  align-items: center;
+
+  padding: 7px 14px;
+
+  border: 1px solid #e5e5e5;
+  border-radius: 30px;
+
+  background: #f8f8f8;
+
+  color: #555;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.4px;
+
+  margin-bottom: 18px;
+}
+
+.documentation-home-header h1 {
+  margin: 0 0 12px;
+
+  color: #111;
+
+  font-size: 2.3rem;
+  font-weight: 750;
+  letter-spacing: -0.8px;
+}
+
+.documentation-home-header p {
+  max-width: 650px;
+
+  margin: 0 auto;
+
+  color: #666;
+
+  font-size: 15px;
+  line-height: 1.7;
+}
+
+
+/* =========================
+   DOCUMENTATION CARDS
+   ========================= */
+
+.documentation-menu {
+  display: grid;
+
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+
+  gap: 16px;
+}
+
+
+.documentation-card {
+  position: relative;
+
+  width: 100%;
+  min-height: 150px;
+
+  display: flex;
+  align-items: flex-start;
+
+  gap: 18px;
+
+  padding: 22px;
+
+  box-sizing: border-box;
+
+  background: #ffffff;
+
+  border: 1px solid #e5e5e5;
+  border-radius: 16px;
+
+  text-align: left;
+
+  cursor: pointer;
+
+  overflow: hidden;
+
+  box-shadow:
+    0 4px 18px rgba(0, 0, 0, 0.045);
+
+  transition:
+    transform 0.25s ease,
+    box-shadow 0.25s ease,
+    border-color 0.25s ease,
+    background 0.25s ease;
+}
+
+
+.documentation-card::before {
+  content: "";
+
+  position: absolute;
+
+  left: 0;
+  top: 0;
+  bottom: 0;
+
+  width: 3px;
+
+  background: linear-gradient(
+    to bottom,
+    var(--logo-purple),
+    var(--logo-green)
+  );
+
+  opacity: 0;
+
+  transition: opacity 0.25s ease;
+}
+
+
+.documentation-card:hover {
+  transform: translateY(-4px);
+
+  border-color: #d5d5d5;
+
+  box-shadow:
+    0 12px 30px rgba(0, 0, 0, 0.09);
+}
+
+
+.documentation-card:hover::before {
+  opacity: 1;
+}
+
+
+/* Number */
+
+.documentation-card-number {
+  flex-shrink: 0;
+
+  width: 42px;
+  height: 42px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 11px;
+
+  background: #f4f4f4;
+
+  color: #222;
+
+  font-size: 12px;
+  font-weight: 700;
+
+  transition:
+    background 0.25s ease,
+    color 0.25s ease;
+}
+
+
+.documentation-card:hover
+.documentation-card-number {
+  background: #222;
+  color: #fff;
+}
+
+
+/* Content */
+
+.documentation-card-content {
+  flex: 1;
+
+  min-width: 0;
+}
+
+.documentation-card-content h2 {
+  margin: 2px 0 8px;
+
+  color: #171717;
+
+  font-size: 17px;
+  font-weight: 700;
+}
+
+.documentation-card-content p {
+  margin: 0;
+
+  color: #666;
+
+  font-size: 13.5px;
+  line-height: 1.6;
+}
+
+
+/* Arrow */
+
+.documentation-card-arrow {
+  flex-shrink: 0;
+
+  align-self: center;
+
+  color: #999;
+
+  font-size: 22px;
+
+  transition:
+    transform 0.25s ease,
+    color 0.25s ease;
+}
+
+
+.documentation-card:hover
+.documentation-card-arrow {
+  color: #222;
+
+  transform: translateX(4px);
+}
+
+
+/* =========================
+   BACK TO LOGIN
+   ========================= */
+
+.documentation-home-footer {
+  display: flex;
+  justify-content: center;
+
+  margin-top: 42px;
+  padding-top: 28px;
+
+  border-top: 1px solid #eeeeee;
+}
+
+
+.documentation-back-login {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 11px 20px;
+
+  background: #ffffff;
+
+  border: 1px solid #dddddd;
+  border-radius: 9px;
+
+  color: #222;
+
+  font-size: 14px;
+  font-weight: 600;
+
+  cursor: pointer;
+
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease,
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+
+.documentation-back-login:hover {
+  background: #f7f7f7;
+
+  border-color: #cfcfcf;
+
+  transform: translateY(-2px);
+
+  box-shadow:
+    0 6px 18px rgba(0, 0, 0, 0.07);
+}
+
+
+.documentation-back-login:active {
+  transform: translateY(0);
+}
+
+
+/* =========================
+   FOCUS
+   ========================= */
+
+.documentation-card:focus-visible,
+.documentation-back-login:focus-visible {
+  outline: 2px solid #333;
+  outline-offset: 3px;
+}
+
+
+/* =========================
+   MOBILE
+   ========================= */
+
+@media (max-width: 800px) {
+
+  .documentation {
+    padding: 40px 20px 35px;
+  }
+
+  .documentation-home-header {
+    margin-bottom: 30px;
+  }
+
+  .documentation-home-header h1 {
+    font-size: 2rem;
+  }
+
+  .documentation-menu {
+    grid-template-columns: 1fr;
+  }
+
+  .documentation-card {
+    min-height: 135px;
+  }
+}
+
+
+/* =========================
+   SMALL MOBILE
+   ========================= */
+
+@media (max-width: 480px) {
+
+  .documentation {
+    padding: 30px 15px 30px;
+  }
+
+  .documentation-home-header h1 {
+    font-size: 1.7rem;
+  }
+
+  .documentation-home-header p {
+    font-size: 14px;
+  }
+
+  .documentation-card {
+    min-height: auto;
+
+    padding: 18px;
+
+    gap: 13px;
+  }
+
+  .documentation-card-number {
+    width: 36px;
+    height: 36px;
+
+    border-radius: 9px;
+
+    font-size: 11px;
+  }
+
+  .documentation-card-content h2 {
+    font-size: 15px;
+  }
+
+  .documentation-card-content p {
+    font-size: 13px;
+  }
+
+  .documentation-card-arrow {
+    font-size: 19px;
+  }
+
+  .documentation-home-footer {
+    margin-top: 30px;
+  }
+
+  .documentation-back-login {
+    width: 100%;
+  }
+}
