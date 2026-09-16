@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { setView } from "../../../Slice/authSlice";
 import "./Documentation.css";
@@ -10,14 +10,45 @@ import FindUserDocumentation from "./DocumentationChilds/FindUserDocumentation";
 import MainChatDocumentation from "./DocumentationChilds/MainChatDocumentation";
 import SettingDocumentation from "./DocumentationChilds/SettingDocumentation";
 
+const getDocumentationPage = () => {
+  const path = window.location.pathname;
+
+  if (path === "/about") return "home";
+  if (path === "/about/create-account") return "create";
+  if (path === "/about/login") return "login";
+  if (path === "/about/forgot-password") return "forgot-password";
+  if (path === "/about/find-user") return "find-user";
+  if (path === "/about/main-chat") return "main-chat";
+  if (path === "/about/settings") return "settings";
+
+  return "home";
+};
+
 const Documentation = () => {
-  const [activePage, setActivePage] = useState(null);
+  const [activePage, setActivePage] = useState(getDocumentationPage);
   const dispatch = useDispatch();
+
+  useEffect(() => {
+    const handlePopState = () => {
+      setActivePage(getDocumentationPage());
+    };
+
+    window.addEventListener("popstate", handlePopState);
+
+    return () => {
+      window.removeEventListener("popstate", handlePopState);
+    };
+  }, []);
+
+  const navigateDocumentation = (path) => {
+    window.history.pushState({}, "", path);
+    setActivePage(getDocumentationPage());
+  };
 
   if (activePage === "create") {
     return (
       <CreateDocumentation
-        onHome={() => setActivePage(null)}
+        onHome={() => navigateDocumentation("/about")}
       />
     );
   }
@@ -25,7 +56,7 @@ const Documentation = () => {
   if (activePage === "login") {
     return (
       <LoginDocumentation
-        onHome={() => setActivePage(null)}
+        onHome={() => navigateDocumentation("/about")}
       />
     );
   }
@@ -33,7 +64,7 @@ const Documentation = () => {
   if (activePage === "forgot-password") {
     return (
       <ForgotPasswordDocumentation
-        onHome={() => setActivePage(null)}
+        onHome={() => navigateDocumentation("/about")}
       />
     );
   }
@@ -41,7 +72,7 @@ const Documentation = () => {
   if (activePage === "find-user") {
     return (
       <FindUserDocumentation
-        onHome={() => setActivePage(null)}
+        onHome={() => navigateDocumentation("/about")}
       />
     );
   }
@@ -49,7 +80,7 @@ const Documentation = () => {
   if (activePage === "main-chat") {
     return (
       <MainChatDocumentation
-        onHome={() => setActivePage(null)}
+        onHome={() => navigateDocumentation("/about")}
       />
     );
   }
@@ -57,7 +88,7 @@ const Documentation = () => {
   if (activePage === "settings") {
     return (
       <SettingDocumentation
-        onHome={() => setActivePage(null)}
+        onHome={() => navigateDocumentation("/about")}
       />
     );
   }
@@ -89,7 +120,9 @@ const Documentation = () => {
 
         <button
           className="documentation-card"
-          onClick={() => setActivePage("create")}
+          onClick={() =>
+            navigateDocumentation("/about/create-account")
+          }
         >
           <div className="documentation-card-number">
             01
@@ -109,10 +142,11 @@ const Documentation = () => {
           </div>
         </button>
 
-
         <button
           className="documentation-card"
-          onClick={() => setActivePage("login")}
+          onClick={() =>
+            navigateDocumentation("/about/login")
+          }
         >
           <div className="documentation-card-number">
             02
@@ -132,10 +166,11 @@ const Documentation = () => {
           </div>
         </button>
 
-
         <button
           className="documentation-card"
-          onClick={() => setActivePage("forgot-password")}
+          onClick={() =>
+            navigateDocumentation("/about/forgot-password")
+          }
         >
           <div className="documentation-card-number">
             03
@@ -155,10 +190,11 @@ const Documentation = () => {
           </div>
         </button>
 
-
         <button
           className="documentation-card"
-          onClick={() => setActivePage("find-user")}
+          onClick={() =>
+            navigateDocumentation("/about/find-user")
+          }
         >
           <div className="documentation-card-number">
             04
@@ -178,10 +214,11 @@ const Documentation = () => {
           </div>
         </button>
 
-
         <button
           className="documentation-card"
-          onClick={() => setActivePage("main-chat")}
+          onClick={() =>
+            navigateDocumentation("/about/main-chat")
+          }
         >
           <div className="documentation-card-number">
             05
@@ -201,10 +238,11 @@ const Documentation = () => {
           </div>
         </button>
 
-
         <button
           className="documentation-card"
-          onClick={() => setActivePage("settings")}
+          onClick={() =>
+            navigateDocumentation("/about/settings")
+          }
         >
           <div className="documentation-card-number">
             06
@@ -225,7 +263,6 @@ const Documentation = () => {
         </button>
 
       </div>
-
 
       {/* Back to Login */}
       <div className="documentation-home-footer">

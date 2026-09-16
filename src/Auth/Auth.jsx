@@ -15,30 +15,18 @@ const Auth = () => {
   const dispatch = useDispatch();
 
   const cardClass =
-    view === "about"
-      ? "about-page-wrapper"
-      : `auth-card ${view}-view-active`;
+    view === "about" ? "about-page-wrapper" : `auth-card ${view}-view-active`;
 
   useEffect(() => {
-    if (
-      window.location.pathname === "/about" &&
-      view !== "about"
-    ) {
+    if (window.location.pathname.startsWith("/about") && view !== "about") {
       dispatch(setView("about"));
     }
   }, [dispatch, view]);
 
   return (
-    <div
-      className={
-        view === "about"
-          ? "about-full-page"
-          : "auth-full-page"
-      }
-    >
+    <div className={view === "about" ? "about-full-page" : "auth-full-page"}>
       <div className={cardClass}>
         <div className="form-wrapper">
-
           {view === "login" && <Login />}
 
           {view === "forgot" && <Forgot />}
@@ -48,7 +36,6 @@ const Auth = () => {
           {view === "success" && <SuccessInfo />}
 
           {view === "about" && <About />}
-
         </div>
       </div>
     </div>
