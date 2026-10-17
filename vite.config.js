@@ -29,7 +29,7 @@ export default defineConfig({
     minify: 'terser',
     terserOptions: {
       compress: {
-        drop_console: false, // कंसोल लॉग्स को हटा देगा
+        drop_console: true, // कंसोल लॉग्स को हटा देगा
         drop_debugger: true,
       },
     },
