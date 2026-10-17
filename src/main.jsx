@@ -4,7 +4,7 @@ import { Provider } from 'react-redux';
 import { store } from './store/store.js';
 import App from './App.jsx';
 
-const isMaintenance = import.meta.env.VITE_MAINTENANCE_MODE === 'true';
+const isMaintenance = import.meta.env.MAINTENANCE_MODE === 'true';
 
 if (isMaintenance) {
   createRoot(document.getElementById('root')).render(
