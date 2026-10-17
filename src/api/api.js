@@ -7,10 +7,10 @@ const USE_LOCAL_SERVER = false;
 const API_ENDPOINTS = {
   JAVA: USE_LOCAL_SERVER
     ? "http://localhost:8082/api"
-    : import.meta.env.JAVA_API_URL,
+    : import.meta.env.VITE_JAVA_API_URL,
   MONGO: USE_LOCAL_SERVER
     ? "http://localhost:5000/api"
-    : import.meta.env.MONGO_API_URL,
+    : import.meta.env.VITE_MONGO_API_URL,
 };
 // --- UPDATE END ---
 
