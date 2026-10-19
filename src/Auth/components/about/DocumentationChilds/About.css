@@ -1,0 +1,808 @@
+/* =========================================
+   ABOUT PAGE
+   Matches Documentation.css design system
+   ========================================= */
+
+.about-page {
+  width: 100%;
+  margin: 0 auto;
+  padding: 0 0 25px;
+  box-sizing: border-box;
+
+  color: #555;
+  line-height: 1.7;
+}
+
+.about-page *,
+.about-page *::before,
+.about-page *::after {
+  box-sizing: border-box;
+}
+
+
+/* =========================================
+   HERO / HEADER
+   ========================================= */
+
+.about-hero {
+  position: relative;
+  overflow: hidden;
+
+  padding: 35px 30px;
+  margin-bottom: 35px;
+
+  text-align: center;
+
+  background: #fff;
+
+}
+
+.about-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 7px 14px;
+  margin-bottom: 18px;
+
+  background: #f8f8f8;
+  color: #555;
+
+  border: 1px solid #e5e5e5;
+  border-radius: 30px;
+
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.4px;
+  text-transform: uppercase;
+}
+
+.about-hero h1 {
+  margin: 0 0 12px;
+
+  color: #111;
+
+  font-size: 2.3rem;
+  font-weight: 750;
+  line-height: 1.25;
+  letter-spacing: -0.8px;
+
+  overflow-wrap: anywhere;
+}
+
+.about-tagline {
+  margin: 0 0 16px;
+
+  color: var(--logo-purple, #7567f8);
+
+  font-size: 16px;
+  font-weight: 650;
+  line-height: 1.6;
+}
+
+.about-intro {
+  max-width: 700px;
+  margin: 0 auto;
+
+  color: #666;
+
+  font-size: 15px;
+  line-height: 1.8;
+  overflow-wrap: anywhere;
+}
+
+.about-hero-decoration {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+
+  margin-top: 22px;
+}
+
+.about-hero-decoration span {
+  display: block;
+
+  width: 7px;
+  height: 7px;
+
+  border-radius: 50%;
+  background: var(--logo-purple, #7567f8);
+}
+
+.about-hero-decoration span:nth-child(2) {
+  width: 23px;
+  border-radius: 10px;
+  background: var(--logo-green, #39c5ad);
+}
+
+
+/* =========================================
+   ABOUT SECTIONS
+   ========================================= */
+
+.about-sections {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.about-section {
+  position: relative;
+  min-width: 0;
+
+  padding: 22px;
+
+  background: #fff;
+
+  border: 1px solid #e5e5e5;
+  border-radius: 16px;
+
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.045);
+
+  transition:
+    transform 0.25s ease,
+    box-shadow 0.25s ease,
+    border-color 0.25s ease,
+    background 0.25s ease;
+}
+
+.about-section--wide {
+  grid-column: 1 / -1;
+}
+
+/* Same purple-green accent as documentation cards */
+.about-section::before {
+  content: "";
+
+  position: absolute;
+  z-index: 1;
+
+  left: 0;
+  top: 0;
+  bottom: 0;
+
+  width: 3px;
+
+  background: linear-gradient(
+    to bottom,
+    var(--logo-purple, #7567f8),
+    var(--logo-green, #39c5ad)
+  );
+
+  opacity: 0;
+
+  transition: opacity 0.25s ease;
+}
+
+
+/* =========================================
+   SECTION HEADINGS
+   ========================================= */
+
+.about-section-heading {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+
+  margin-bottom: 18px;
+  padding-bottom: 12px;
+
+  border-bottom: 2px solid #f0f0f0;
+}
+
+.about-section-number {
+  flex-shrink: 0;
+
+  width: 42px;
+  height: 42px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 11px;
+
+  background: #f4f4f4;
+  color: #222;
+
+  font-size: 12px;
+  font-weight: 700;
+
+  transition:
+    background 0.25s ease,
+    color 0.25s ease;
+}
+
+.about-section-heading h2 {
+  min-width: 0;
+  margin: 0;
+
+  color: #171717;
+
+  font-size: 19px;
+  font-weight: 700;
+  line-height: 1.45;
+
+  overflow-wrap: anywhere;
+}
+
+
+/* =========================================
+   PARAGRAPHS
+   ========================================= */
+
+.about-paragraphs {
+  display: flex;
+  flex-direction: column;
+  gap: 13px;
+}
+
+.about-paragraphs p {
+  margin: 0;
+
+  color: #666;
+
+  font-size: 13.5px;
+  line-height: 1.8;
+
+  overflow-wrap: anywhere;
+}
+
+
+/* =========================================
+   PRINCIPLES / ITEMS
+   ========================================= */
+
+.about-principles-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.about-principle-card {
+  position: relative;
+  min-width: 0;
+
+  padding: 18px;
+
+  background: #fff;
+
+  border: 1px solid #e5e5e5;
+  border-radius: 12px;
+
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.045);
+
+  transition:
+    transform 0.25s ease,
+    box-shadow 0.25s ease,
+    border-color 0.25s ease,
+    background 0.25s ease;
+}
+
+.about-principle-number {
+  display: inline-block;
+
+  margin-bottom: 10px;
+
+  color: var(--logo-purple, #7567f8);
+
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.about-principle-card h3 {
+  margin: 0 0 8px;
+
+  color: #171717;
+
+  font-size: 15px;
+  font-weight: 700;
+  line-height: 1.5;
+
+  overflow-wrap: anywhere;
+}
+
+.about-principle-card p {
+  margin: 0;
+
+  color: #666;
+
+  font-size: 13.5px;
+  line-height: 1.7;
+
+  overflow-wrap: anywhere;
+}
+
+
+/* =========================================
+   CONTACT LINKS
+   ========================================= */
+
+.about-links-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+
+  margin-top: 8px;
+}
+
+.about-link-card {
+  position: relative;
+  min-width: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+
+  padding: 18px;
+
+  background: #fff;
+  color: #333;
+
+  border: 1px solid #e5e5e5;
+  border-radius: 12px;
+
+  text-align: left;
+  text-decoration: none;
+
+  overflow: hidden;
+
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.045);
+
+  transition:
+    transform 0.25s ease,
+    box-shadow 0.25s ease,
+    border-color 0.25s ease,
+    background 0.25s ease;
+}
+
+.about-link-content {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+
+  min-width: 0;
+}
+
+.about-link-label {
+  color: #171717;
+
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1.5;
+
+  overflow-wrap: anywhere;
+}
+
+.about-link-url {
+  color: #666;
+
+  font-size: 12px;
+  line-height: 1.6;
+
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+.about-link-arrow {
+  flex-shrink: 0;
+
+  width: 32px;
+  height: 32px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 9px;
+
+  background: #f4f4f4;
+  color: #999;
+
+  font-size: 21px;
+
+  transition:
+    transform 0.25s ease,
+    color 0.25s ease,
+    background 0.25s ease;
+}
+
+
+/* =========================================
+   UNIFIED HOVER EFFECTS
+   Same motion and shadow as documentation
+   ========================================= */
+
+@media (hover: hover) and (pointer: fine) {
+
+  /* Text sections */
+  .about-section:not(.about-section--wide):hover {
+    transform: translateY(-4px);
+
+    border-color: #d5d5d5;
+
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.09);
+  }
+
+  .about-section:not(.about-section--wide):hover::before {
+    opacity: 1;
+  }
+
+  .about-section:not(.about-section--wide):hover
+  .about-section-number {
+    background: #222;
+    color: #fff;
+  }
+
+  /* Wide sections remain stable while inner cards are hovered */
+  .about-section--wide:hover {
+    border-color: #d5d5d5;
+  }
+
+  /* Principle cards */
+  .about-principle-card:hover {
+    transform: translateY(-4px);
+
+    border-color: #d5d5d5;
+
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.09);
+  }
+
+  .about-principle-card:hover .about-principle-number {
+    color: var(--logo-green, #39c5ad);
+  }
+
+  /* Clickable contact links */
+  .about-link-card:hover {
+    transform: translateY(-4px);
+
+    border-color: #d5d5d5;
+
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.09);
+  }
+
+  .about-link-card:hover .about-link-arrow {
+    color: #222;
+    transform: translateX(4px);
+  }
+}
+
+.about-link-card:active {
+  transform: translateY(0);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.045);
+}
+
+
+/* =========================================
+   LOADING / ERROR STATES
+   ========================================= */
+
+.about-state {
+  width: 100%;
+  min-height: 300px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  padding: 50px 20px;
+
+  text-align: center;
+}
+
+.about-state h2 {
+  margin: 18px 0 8px;
+
+  color: #222;
+
+  font-size: 21px;
+  font-weight: 700;
+}
+
+.about-state p {
+  max-width: 450px;
+  margin: 0;
+
+  color: #777;
+
+  font-size: 14px;
+  line-height: 1.7;
+}
+
+.about-state-spinner {
+  width: 36px;
+  height: 36px;
+
+  border: 3px solid #e8e8e8;
+  border-top-color: var(--logo-purple, #7567f8);
+
+  border-radius: 50%;
+
+  animation: about-spinner 0.8s linear infinite;
+}
+
+.about-state-icon {
+  width: 42px;
+  height: 42px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 50%;
+
+  background: #fafafa;
+  border: 1px solid #e5e5e5;
+
+  color: #d32f2f;
+
+  font-size: 23px;
+  font-weight: 700;
+}
+
+.about-retry-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  margin-top: 20px;
+  padding: 11px 20px;
+
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 9px;
+
+  color: #222;
+
+  font-size: 14px;
+  font-weight: 600;
+
+  cursor: pointer;
+
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease,
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.about-retry-button:active {
+  transform: translateY(0);
+}
+
+
+/* =========================================
+   FOCUS ACCESSIBILITY
+   ========================================= */
+
+.about-link-card:focus-visible,
+.about-retry-button:focus-visible {
+  outline: 2px solid var(--logo-purple, #7567f8);
+  outline-offset: 3px;
+}
+
+
+/* =========================================
+   ANIMATION
+   ========================================= */
+
+@keyframes about-spinner {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+
+/* =========================================
+   TABLET
+   ========================================= */
+
+@media (max-width: 800px) {
+
+  .about-hero {
+    padding: 30px 20px;
+    margin-bottom: 30px;
+  }
+
+  .about-hero h1 {
+    font-size: 2rem;
+  }
+
+  .about-sections {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .about-section--wide {
+    grid-column: auto;
+  }
+
+  .about-principles-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .about-section {
+    padding: 20px;
+  }
+}
+
+
+/* =========================================
+   MOBILE
+   ========================================= */
+
+@media (max-width: 480px) {
+
+  .about-page {
+    padding-bottom: 20px;
+  }
+
+  .about-hero {
+    padding: 27px 16px;
+    margin-bottom: 25px;
+
+    border-radius: 12px;
+  }
+
+  .about-eyebrow {
+    padding: 7px 12px;
+    margin-bottom: 15px;
+
+    font-size: 11px;
+  }
+
+  .about-hero h1 {
+    font-size: 1.7rem;
+    letter-spacing: -0.5px;
+  }
+
+  .about-tagline {
+    font-size: 14px;
+  }
+
+  .about-intro {
+    font-size: 14px;
+    line-height: 1.75;
+  }
+
+  .about-sections {
+    gap: 14px;
+  }
+
+  .about-section {
+    padding: 18px;
+
+    border-radius: 12px;
+  }
+
+  .about-section-heading {
+    gap: 12px;
+    margin-bottom: 15px;
+    padding-bottom: 10px;
+  }
+
+  .about-section-number {
+    width: 36px;
+    height: 36px;
+
+    border-radius: 9px;
+
+    font-size: 11px;
+  }
+
+  .about-section-heading h2 {
+    font-size: 17px;
+  }
+
+  .about-paragraphs {
+    gap: 11px;
+  }
+
+  .about-paragraphs p {
+    font-size: 13px;
+    line-height: 1.8;
+  }
+
+  .about-principles-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .about-principle-card {
+    padding: 16px;
+
+    border-radius: 12px;
+  }
+
+  .about-principle-card h3 {
+    font-size: 14px;
+  }
+
+  .about-principle-card p {
+    font-size: 13px;
+  }
+
+  .about-links-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .about-link-card {
+    padding: 15px;
+
+    border-radius: 12px;
+  }
+
+  .about-link-label {
+    font-size: 13px;
+  }
+
+  .about-link-url {
+    font-size: 11px;
+  }
+
+  .about-link-arrow {
+    width: 29px;
+    height: 29px;
+
+    font-size: 19px;
+  }
+}
+
+
+/* =========================================
+   VERY SMALL SCREENS
+   ========================================= */
+
+@media (max-width: 380px) {
+
+  .about-hero {
+    padding: 23px 13px;
+  }
+
+  .about-hero h1 {
+    font-size: 1.55rem;
+  }
+
+  .about-section {
+    padding: 15px;
+  }
+
+  .about-section-heading {
+    gap: 9px;
+  }
+
+  .about-section-heading h2 {
+    font-size: 16px;
+  }
+
+  .about-link-card {
+    gap: 8px;
+    padding: 12px;
+  }
+
+  .about-link-arrow {
+    width: 27px;
+    height: 27px;
+  }
+}
+
+
+/* =========================================
+   REDUCED MOTION
+   ========================================= */
+
+@media (prefers-reduced-motion: reduce) {
+
+  .about-page *,
+  .about-page *::before,
+  .about-page *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

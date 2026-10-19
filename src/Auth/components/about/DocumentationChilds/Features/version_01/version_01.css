@@ -1,0 +1,674 @@
+/* =========================================
+   VERSION 01 PAGE
+   ========================================= */
+
+.version-01-page {
+  --v01-border: #e5e5e5;
+  --v01-text: #171717;
+  --v01-muted: #666;
+  --v01-surface: #fff;
+  --v01-soft: #f8f8f8;
+  --v01-purple: var(--logo-purple, #7567f8);
+  --v01-green: var(--logo-green, #39c5ad);
+
+  width: 100%;
+  max-width: 1050px;
+
+  margin: 0 auto;
+  padding: 40px 30px 60px;
+
+  box-sizing: border-box;
+
+  color: #555;
+  line-height: 1.7;
+}
+
+.version-01-page *,
+.version-01-page *::before,
+.version-01-page *::after {
+  box-sizing: border-box;
+}
+
+
+/* =========================================
+   HERO / HEADER
+   ========================================= */
+
+.version-01-hero {
+  text-align: center;
+  margin-bottom: 45px;
+}
+
+.version-01-badges {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 9px;
+
+  margin-bottom: 18px;
+}
+
+.version-01-badge,
+.version-01-version {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 7px 14px;
+
+  border: 1px solid var(--v01-border);
+  border-radius: 30px;
+
+  background: #f8f8f8;
+  color: #555;
+
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.4px;
+}
+
+.version-01-version {
+  background: #fff;
+
+  color: var(--v01-purple);
+
+  border-color: rgba(117, 103, 248, 0.28);
+}
+
+.version-01-hero h1 {
+  margin: 0 0 12px;
+
+  color: #111;
+
+  font-size: 2.3rem;
+  font-weight: 750;
+  line-height: 1.25;
+  letter-spacing: -0.8px;
+
+  overflow-wrap: anywhere;
+}
+
+.version-01-tagline {
+  margin: 0 0 16px;
+
+  color: var(--v01-purple);
+
+  font-size: 16px;
+  font-weight: 650;
+  line-height: 1.7;
+}
+
+.version-01-intro {
+  max-width: 760px;
+
+  margin: 0 auto;
+
+  color: var(--v01-muted);
+
+  font-size: 15px;
+  line-height: 1.8;
+
+  overflow-wrap: anywhere;
+}
+
+
+/* =========================================
+   FEATURE SECTIONS
+   ========================================= */
+
+.version-01-sections {
+  display: flex;
+  flex-direction: column;
+  gap: 38px;
+}
+
+.version-01-section {
+  min-width: 0;
+}
+
+
+/* =========================================
+   SECTION HEADER
+   ========================================= */
+
+.version-01-section-header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+
+  margin-bottom: 12px;
+  padding-bottom: 14px;
+
+  border-bottom: 2px solid #f0f0f0;
+}
+
+.version-01-section-number {
+  flex-shrink: 0;
+
+  width: 42px;
+  height: 42px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 11px;
+
+  background: #f4f4f4;
+  color: #222;
+
+  font-size: 12px;
+  font-weight: 700;
+
+  transition:
+    background 0.25s ease,
+    color 0.25s ease;
+}
+
+.version-01-section-heading {
+  flex: 1;
+  min-width: 0;
+}
+
+.version-01-section-heading h2 {
+  margin: 0;
+
+  color: #171717;
+
+  font-size: 21px;
+  font-weight: 700;
+  line-height: 1.4;
+
+  overflow-wrap: anywhere;
+}
+
+.version-01-section-description {
+  margin: 0 0 19px;
+
+  color: var(--v01-muted);
+
+  font-size: 14px;
+  line-height: 1.75;
+
+  overflow-wrap: anywhere;
+}
+
+
+/* =========================================
+   FEATURE CARDS GRID
+   ========================================= */
+
+.version-01-items {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+
+  gap: 16px;
+}
+
+
+/* =========================================
+   FEATURE CARD
+   ========================================= */
+
+.version-01-item {
+  position: relative;
+
+  min-width: 0;
+  min-height: 108px;
+
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+
+  padding: 20px;
+
+  background: var(--v01-surface);
+
+  border: 1px solid var(--v01-border);
+  border-radius: 16px;
+
+  overflow: hidden;
+
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.045);
+
+  transition:
+    transform 0.25s ease,
+    box-shadow 0.25s ease,
+    border-color 0.25s ease,
+    background 0.25s ease;
+}
+
+
+/* Accent strip — same style as documentation cards */
+
+.version-01-item::before {
+  content: "";
+
+  position: absolute;
+
+  left: 0;
+  top: 0;
+  bottom: 0;
+
+  width: 3px;
+
+  background: linear-gradient(
+    to bottom,
+    var(--v01-purple),
+    var(--v01-green)
+  );
+
+  opacity: 0;
+
+  transition: opacity 0.25s ease;
+}
+
+
+/* Feature number */
+
+.version-01-item-number {
+  flex-shrink: 0;
+
+  width: 36px;
+  height: 36px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 10px;
+
+  background: #f4f4f4;
+  color: #222;
+
+  font-size: 11px;
+  font-weight: 700;
+
+  transition:
+    background 0.25s ease,
+    color 0.25s ease;
+}
+
+
+/* Feature content */
+
+.version-01-item-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.version-01-item-content h3 {
+  margin: 2px 0 8px;
+
+  color: var(--v01-text);
+
+  font-size: 15px;
+  font-weight: 700;
+  line-height: 1.5;
+
+  overflow-wrap: anywhere;
+}
+
+.version-01-item-content p {
+  margin: 0;
+
+  color: var(--v01-muted);
+
+  font-size: 13.5px;
+  line-height: 1.7;
+
+  overflow-wrap: anywhere;
+}
+
+
+/* =========================================
+   HOVER EFFECTS
+   ========================================= */
+
+@media (hover: hover) and (pointer: fine) {
+  .version-01-item:hover {
+    transform: translateY(-4px);
+
+    border-color: #d5d5d5;
+
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.09);
+  }
+
+  .version-01-item:hover::before {
+    opacity: 1;
+  }
+
+  .version-01-item:hover .version-01-item-number {
+    background: #222;
+    color: #fff;
+  }
+}
+
+
+/* =========================================
+   LOADING / ERROR STATES
+   ========================================= */
+
+.version-01-state {
+  min-height: 320px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  padding: 50px 20px;
+
+  text-align: center;
+}
+
+.version-01-state h2 {
+  margin: 18px 0 8px;
+
+  color: #222;
+
+  font-size: 21px;
+  font-weight: 700;
+}
+
+.version-01-state p {
+  max-width: 450px;
+
+  margin: 0;
+
+  color: #777;
+
+  font-size: 14px;
+  line-height: 1.7;
+}
+
+.version-01-spinner {
+  width: 36px;
+  height: 36px;
+
+  border: 3px solid #e8e8e8;
+  border-top-color: var(--v01-purple);
+
+  border-radius: 50%;
+
+  animation: version-01-spin 0.8s linear infinite;
+}
+
+.version-01-error-icon {
+  width: 42px;
+  height: 42px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border: 1px solid #e5e5e5;
+  border-radius: 50%;
+
+  background: #fafafa;
+  color: #d32f2f;
+
+  font-size: 23px;
+  font-weight: 700;
+}
+
+.version-01-retry {
+  margin-top: 20px;
+  padding: 11px 20px;
+
+  background: #fff;
+
+  border: 1px solid #ddd;
+  border-radius: 9px;
+
+  color: #222;
+
+  font-size: 14px;
+  font-weight: 600;
+
+  cursor: pointer;
+
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease,
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.version-01-retry:hover {
+  background: #f7f7f7;
+  border-color: #cfcfcf;
+}
+
+.version-01-retry:active {
+  transform: translateY(0);
+}
+
+
+/* =========================================
+   FOCUS ACCESSIBILITY
+   ========================================= */
+
+.version-01-retry:focus-visible {
+  outline: 2px solid var(--v01-purple);
+  outline-offset: 3px;
+}
+
+
+/* =========================================
+   ANIMATION
+   ========================================= */
+
+@keyframes version-01-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+
+/* =========================================
+   TABLET
+   ========================================= */
+
+@media (max-width: 800px) {
+  .version-01-page {
+    padding: 40px 20px 45px;
+  }
+
+  .version-01-hero {
+    margin-bottom: 35px;
+  }
+
+  .version-01-hero h1 {
+    font-size: 2rem;
+  }
+
+  .version-01-sections {
+    gap: 32px;
+  }
+
+  .version-01-items {
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+
+  .version-01-item {
+    min-height: 0;
+  }
+}
+
+
+/* =========================================
+   SMALL MOBILE
+   ========================================= */
+
+@media (max-width: 480px) {
+  .version-01-page {
+    padding: 30px 15px 35px;
+  }
+
+  .version-01-hero {
+    margin-bottom: 30px;
+  }
+
+  .version-01-badges {
+    gap: 7px;
+    margin-bottom: 15px;
+  }
+
+  .version-01-badge,
+  .version-01-version {
+    padding: 6px 11px;
+    font-size: 11px;
+  }
+
+  .version-01-hero h1 {
+    font-size: 1.7rem;
+  }
+
+  .version-01-tagline {
+    font-size: 14px;
+  }
+
+  .version-01-intro {
+    font-size: 14px;
+    line-height: 1.75;
+  }
+
+  .version-01-sections {
+    gap: 28px;
+  }
+
+  .version-01-section-header {
+    gap: 11px;
+    margin-bottom: 12px;
+    padding-bottom: 11px;
+  }
+
+  .version-01-section-number {
+    width: 36px;
+    height: 36px;
+
+    border-radius: 9px;
+
+    font-size: 11px;
+  }
+
+  .version-01-section-heading h2 {
+    font-size: 18px;
+  }
+
+  .version-01-section-description {
+    font-size: 13px;
+    margin-bottom: 15px;
+  }
+
+  .version-01-items {
+    gap: 12px;
+  }
+
+  .version-01-item {
+    gap: 13px;
+    padding: 17px;
+
+    border-radius: 12px;
+  }
+
+  .version-01-item-number {
+    width: 32px;
+    height: 32px;
+
+    border-radius: 9px;
+
+    font-size: 10px;
+  }
+
+  .version-01-item-content h3 {
+    font-size: 14px;
+  }
+
+  .version-01-item-content p {
+    font-size: 13px;
+  }
+}
+
+
+/* =========================================
+   VERY SMALL SCREENS
+   ========================================= */
+
+@media (max-width: 380px) {
+  .version-01-page {
+    padding-left: 12px;
+    padding-right: 12px;
+  }
+
+  .version-01-hero h1 {
+    font-size: 1.5rem;
+  }
+
+  .version-01-item {
+    gap: 10px;
+    padding: 14px;
+  }
+
+  .version-01-item-number {
+    width: 29px;
+    height: 29px;
+  }
+}
+
+
+/* =========================================
+   REDUCED MOTION
+   ========================================= */
+
+@media (prefers-reduced-motion: reduce) {
+  .version-01-page *,
+  .version-01-page *::before,
+  .version-01-page *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+.version-01-back {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  margin-bottom: 24px;
+  padding: 11px 20px;
+
+  background: #fff;
+
+  border: 1px solid #ddd;
+  border-radius: 9px;
+
+  color: #222;
+  font-size: 14px;
+  font-weight: 600;
+
+  cursor: pointer;
+
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease,
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.version-01-back:hover {
+  background: #f7f7f7;
+  border-color: #cfcfcf;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.07);
+}
+
+.version-01-back:focus-visible {
+  outline: 2px solid #333;
+  outline-offset: 3px;
+}
